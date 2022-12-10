@@ -18,7 +18,7 @@
 namespace po = boost::program_options;
 
 int main(int argc, char *argv[]) {
-  po::options_description desc("LLVM Kaleidoscope tutorial implementation");
+  po::options_description desc("staplc -- Stapl Compiler");
   desc.add_options()("help", "produce help message")(
       "emit-ir", po::value<std::string>(), "emit LLVM IR")("dump-ast",
                                                            "print ast info");

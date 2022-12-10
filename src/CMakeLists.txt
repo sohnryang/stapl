@@ -36,6 +36,6 @@ target_include_directories(IRGen PUBLIC "${PROJECT_SOURCE_DIR}/include" PUBLIC "
 llvm_map_components_to_libnames(llvm_libs core)
 target_link_libraries(IRGen PUBLIC AST PUBLIC ${llvm_libs})
 
-add_executable(kalc kalc.cpp)
-target_include_directories(kalc PRIVATE "${PROJECT_SOURCE_DIR}/include")
-target_link_libraries(kalc PRIVATE ${Boost_LIBRARIES} PRIVATE IRGen PRIVATE AST PRIVATE Parser)
+add_executable(staplc staplc.cpp)
+target_include_directories(staplc PRIVATE "${PROJECT_SOURCE_DIR}/include")
+target_link_libraries(staplc PRIVATE ${Boost_LIBRARIES} PRIVATE IRGen PRIVATE AST PRIVATE Parser)

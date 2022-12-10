@@ -15,7 +15,7 @@
 
 IRGen::IRGen()
     : globals(), context(new llvm::LLVMContext()),
-      module(new llvm::Module("Kaleidoscope", *context)),
+      module(new llvm::Module("Stapl", *context)),
       builder(new llvm::IRBuilder<>(*context)) {}
 
 void IRGen::codegen(std::string const &filename,
