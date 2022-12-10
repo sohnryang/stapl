@@ -11,11 +11,8 @@ Inspired by & started as [LLVM Kaleidoscope tutorial](https://llvm.org/docs/tuto
 Prerequisites:
 
 - C++ compiler with C++20 support
-
 - CMake 3.19+
-
 - Boost
-
 - LLVM
 
 ```shellsession
