@@ -27,7 +27,7 @@ The compiled binary is saved to `build/src/staplc`.
 
 ## Example: fibonacci sequence
 
-> Note: syntax is subject to change as swipl is in early stage of development.
+> Note: syntax is subject to change as stapl is in early stage of development.
 
 ```
 def fib(n: int): int
