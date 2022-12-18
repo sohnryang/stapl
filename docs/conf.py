@@ -24,5 +24,10 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "alabaster"
+html_theme = "furo"
+html_title = "stapl"
+html_theme_options = {
+    "source_repository": "https://github.com/sohnryang/stapl",
+    "source_branch": "main",
+}
 html_static_path = ["_static"]
