@@ -9,4 +9,6 @@ add_subdirectory(src)
 enable_testing()
 add_subdirectory(tests)
 
-add_subdirectory(docs)
+if(${BUILD_DOCS})
+  add_subdirectory(docs)
+endif()
