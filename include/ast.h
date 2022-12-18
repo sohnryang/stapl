@@ -8,28 +8,46 @@
 #include <variant>
 #include <vector>
 
+/**
+  AST node for literal expressions, such as numbers.
+ */
 template <typename T> struct LiteralExprNode {
   T value;
 
   LiteralExprNode(LiteralExprNode<T> &&) = default;
+  /**
+    Instantiate from literal value.
+   */
   LiteralExprNode(T value);
   LiteralExprNode<T> &operator=(LiteralExprNode<T> &&) = default;
 };
 
+/**
+  AST node for variable expressions.
+ */
 struct VariableExprNode {
   std::string name;
 
   VariableExprNode(VariableExprNode &&) = default;
+  /**
+    Instantiate from variable name.
+   */
   VariableExprNode(const std::string &name);
   VariableExprNode &operator=(VariableExprNode &&) = default;
 };
 
+/**
+  Variant for expression nodes.
+ */
 using ExprNode =
     std::variant<LiteralExprNode<int>, LiteralExprNode<double>,
                  VariableExprNode, std::unique_ptr<struct BinaryExprNode>,
                  std::unique_ptr<struct CallExprNode>,
                  std::unique_ptr<struct IfExprNode>>;
 
+/**
+  AST node for binary expressions.
+ */
 struct BinaryExprNode {
   std::string op;
   ExprNode lhs, rhs;
@@ -39,6 +57,9 @@ struct BinaryExprNode {
   BinaryExprNode &operator=(BinaryExprNode &&) = default;
 };
 
+/**
+  AST node for function call expressions.
+ */
 struct CallExprNode {
   std::string callee;
   std::vector<ExprNode> args;
@@ -48,6 +69,9 @@ struct CallExprNode {
   CallExprNode &operator=(CallExprNode &&) = default;
 };
 
+/**
+  AST node for if expressions.
+ */
 struct IfExprNode {
   ExprNode condition, then_expr, else_expr;
 
@@ -56,6 +80,9 @@ struct IfExprNode {
   IfExprNode &operator=(IfExprNode &&) = default;
 };
 
+/**
+  AST node for function prototype.
+ */
 struct PrototypeNode {
   std::string name;
   std::string return_type;
@@ -68,6 +95,9 @@ struct PrototypeNode {
   PrototypeNode &operator=(PrototypeNode &&) = default;
 };
 
+/**
+  AST node for function definition.
+ */
 struct FunctionNode {
   PrototypeNode proto;
   std::optional<ExprNode> func_body;
@@ -79,4 +109,7 @@ struct FunctionNode {
   FunctionNode &operator=(FunctionNode &&) = default;
 };
 
+/**
+  Variant for statement nodes.
+ */
 using StatementNode = std::variant<FunctionNode>;
