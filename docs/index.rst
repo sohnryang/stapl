@@ -16,5 +16,4 @@ Welcome to stapl's documentation!
 Indices and tables
 ==================
 
-* :ref:`modindex`
 * :ref:`search`
