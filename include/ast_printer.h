@@ -5,6 +5,9 @@
 #include <memory>
 #include <string>
 
+/**
+  A visitor for printing AST nodes.
+ */
 class ASTPrinter {
 public:
   std::string operator()(const LiteralExprNode<int> &node) const;

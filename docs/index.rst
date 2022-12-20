@@ -10,7 +10,9 @@ Welcome to stapl's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   Lexer and Parser <parser.rst>
    AST <ast.rst>
+   IR Generation <irgen.rst>
 
 
 Indices and tables

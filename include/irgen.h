@@ -16,6 +16,9 @@
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Value.h>
 
+/**
+  A class for generating IR from AST.
+ */
 class IRGen {
 private:
   std::map<std::string, Type> globals;
@@ -27,6 +30,9 @@ private:
 
 public:
   IRGen();
+  /**
+    Generate LLVM IR and write it to supplied path.
+   */
   void codegen(std::string const &filename, std::vector<StatementNode> &ast);
 
   void operator()(FunctionNode &node);
