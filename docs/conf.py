@@ -43,7 +43,7 @@ def configure_doxyfile(input_dir, output_dir):
         "@DOXYGEN_OUTPUT_DIR@": output_dir,
         "@DOXYGEN_INPUT_DIR@": input_dir,
     }
-    for pattern, value in replace_table:
+    for pattern, value in replace_table.items():
         filedata.replace(pattern, value)
     with open("DOxyfile", "w") as f:
         f.write(filedata)
