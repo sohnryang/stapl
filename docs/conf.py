@@ -45,7 +45,7 @@ def configure_doxyfile(input_dir, output_dir):
     }
     for pattern, value in replace_table.items():
         filedata.replace(pattern, value)
-    with open("DOxyfile", "w") as f:
+    with open("Doxyfile", "w") as f:
         f.write(filedata)
 
 
