@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 
+namespace stapl::types {
 enum class Type {
   kInt,
   kFloat,
@@ -29,10 +30,11 @@ public:
       std::map<std::string, Type> &globals,
       std::map<std::string, std::pair<Type, std::vector<Type>>> functions);
 
-  Type operator()(const LiteralExprNode<int> &node) const;
-  Type operator()(const LiteralExprNode<double> &node) const;
-  Type operator()(const VariableExprNode &node) const;
-  Type operator()(const std::unique_ptr<BinaryExprNode> &node) const;
-  Type operator()(const std::unique_ptr<CallExprNode> &node) const;
-  Type operator()(const std::unique_ptr<IfExprNode> &node) const;
+  Type operator()(const ast::LiteralExprNode<int> &node) const;
+  Type operator()(const ast::LiteralExprNode<double> &node) const;
+  Type operator()(const ast::VariableExprNode &node) const;
+  Type operator()(const std::unique_ptr<ast::BinaryExprNode> &node) const;
+  Type operator()(const std::unique_ptr<ast::CallExprNode> &node) const;
+  Type operator()(const std::unique_ptr<ast::IfExprNode> &node) const;
 };
+} // namespace stapl::types

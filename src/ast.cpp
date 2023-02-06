@@ -5,6 +5,7 @@
 
 #include <fmt/core.h>
 
+namespace stapl::ast {
 template <typename T>
 LiteralExprNode<T>::LiteralExprNode(T value) : value(value) {}
 
@@ -38,3 +39,4 @@ FunctionNode::FunctionNode(PrototypeNode proto)
 
 template class LiteralExprNode<int>;
 template class LiteralExprNode<double>;
+} // namespace stapl::ast

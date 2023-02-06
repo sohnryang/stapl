@@ -10,6 +10,9 @@
 #include <variant>
 #include <vector>
 
+using namespace stapl::ast;
+using namespace stapl::types;
+
 TEST(ExprTypeCheckerTest, Int) {
   ExprNode node = LiteralExprNode<int>(42);
   ExprTypeChecker checker;

@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <variant>
 
+namespace stapl::types {
 ExprTypeChecker::ExprTypeChecker() : globals(), functions() { init_table(); }
 
 ExprTypeChecker::ExprTypeChecker(
@@ -41,27 +42,28 @@ void ExprTypeChecker::init_table() {
   };
 }
 
-Type ExprTypeChecker::operator()(const LiteralExprNode<int> &node) const {
+Type ExprTypeChecker::operator()(const ast::LiteralExprNode<int> &node) const {
   return Type::kInt;
 }
 
-Type ExprTypeChecker::operator()(const LiteralExprNode<double> &node) const {
+Type ExprTypeChecker::operator()(
+    const ast::LiteralExprNode<double> &node) const {
   return Type::kFloat;
 }
 
-Type ExprTypeChecker::operator()(const VariableExprNode &node) const {
+Type ExprTypeChecker::operator()(const ast::VariableExprNode &node) const {
   return globals.at(node.name);
 }
 
 Type ExprTypeChecker::operator()(
-    const std::unique_ptr<BinaryExprNode> &node) const {
+    const std::unique_ptr<ast::BinaryExprNode> &node) const {
   auto lhs_type = std::visit(*this, node->lhs),
        rhs_type = std::visit(*this, node->rhs);
   return binary_op_types.at(node->op).at({lhs_type, rhs_type});
 }
 
 Type ExprTypeChecker::operator()(
-    const std::unique_ptr<CallExprNode> &node) const {
+    const std::unique_ptr<ast::CallExprNode> &node) const {
   for (auto &arg : node->args) {
     auto arg_type = std::visit(*this, arg);
     if (arg_type == Type::kVoid)
@@ -71,7 +73,7 @@ Type ExprTypeChecker::operator()(
 }
 
 Type ExprTypeChecker::operator()(
-    const std::unique_ptr<IfExprNode> &node) const {
+    const std::unique_ptr<ast::IfExprNode> &node) const {
   auto condition_type = std::visit(*this, node->condition);
   if (condition_type != Type::kBool)
     throw std::logic_error("condition type must be bool");
@@ -79,3 +81,4 @@ Type ExprTypeChecker::operator()(
        else_type = std::visit(*this, node->else_expr);
   return binary_op_types.at("if").at({then_type, else_type});
 }
+} // namespace stapl::types

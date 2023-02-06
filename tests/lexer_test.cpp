@@ -6,6 +6,8 @@
 #include <string>
 #include <utility>
 
+using namespace stapl::parsing;
+
 TEST(LexerTest, Def) {
   Lexer lexer("def");
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kDef, "def"));

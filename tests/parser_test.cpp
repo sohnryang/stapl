@@ -9,6 +9,9 @@
 
 #include <gtest/gtest.h>
 
+using namespace stapl::ast;
+using namespace stapl::parsing;
+
 TEST(ParserTest, Int) {
   Parser parser("42");
   auto node = parser.parse_int();

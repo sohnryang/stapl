@@ -7,6 +7,7 @@
 #include <string>
 #include <utility>
 
+namespace stapl::parsing {
 enum class TokenKind {
   kEof,
   kDef,
@@ -34,3 +35,4 @@ public:
   Lexer(std::string code);
   std::pair<TokenKind, std::string> get_token();
 };
+} // namespace stapl::parsing

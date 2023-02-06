@@ -2,6 +2,7 @@
 
 #include <cctype>
 
+namespace stapl::parsing {
 Lexer::Lexer(std::string code) : code(code), last_char(' '), operator_dfa() {
   it = this->code.begin();
   operator_dfa['<'] = {'\0', '='};
@@ -68,3 +69,4 @@ Token Lexer::get_token() {
   }
   return {TokenKind::kOp, op};
 }
+} // namespace stapl::parsing

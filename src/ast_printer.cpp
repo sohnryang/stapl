@@ -4,6 +4,7 @@
 
 #include <fmt/core.h>
 
+namespace stapl::ast {
 std::string ASTPrinter::operator()(const LiteralExprNode<int> &node) const {
   return fmt::format("Literal({}, int)", node.value);
 }
@@ -59,3 +60,4 @@ std::string ASTPrinter::operator()(const FunctionNode &node) const {
   return fmt::format("Func({}, {})", (*this)(node.proto),
                      std::visit(*this, node.func_body.value()));
 }
+} // namespace stapl::ast

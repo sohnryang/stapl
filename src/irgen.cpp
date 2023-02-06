@@ -13,13 +13,14 @@
 
 #include <fmt/core.h>
 
+namespace stapl::ir {
 IRGen::IRGen()
     : globals(), context(new llvm::LLVMContext()),
       module(new llvm::Module("Stapl", *context)),
       builder(new llvm::IRBuilder<>(*context)) {}
 
 void IRGen::codegen(std::string const &filename,
-                    std::vector<StatementNode> &ast) {
+                    std::vector<ast::StatementNode> &ast) {
   std::ofstream outfile(filename);
   llvm::raw_os_ostream outstream(outfile);
   for (auto &subtree_root : ast)
@@ -27,38 +28,38 @@ void IRGen::codegen(std::string const &filename,
   module->print(outstream, nullptr);
 }
 
-void IRGen::operator()(FunctionNode &node) {
+void IRGen::operator()(ast::FunctionNode &node) {
   if (functions.count(node.proto.name))
     throw std::logic_error(
         fmt::format("function named {} already exists", node.proto.name));
   std::vector<llvm::Type *> arg_types_llvm;
-  std::map<std::string, Type> arg_vars;
-  std::vector<Type> arg_types;
+  std::map<std::string, types::Type> arg_vars;
+  std::vector<types::Type> arg_types;
   for (auto &arg : node.proto.args) {
     if (arg.second == "int") {
       arg_types_llvm.push_back(llvm::Type::getInt32Ty(*context));
-      arg_vars[arg.first] = Type::kInt;
-      arg_types.push_back(Type::kInt);
+      arg_vars[arg.first] = types::Type::kInt;
+      arg_types.push_back(types::Type::kInt);
     } else if (arg.second == "float") {
       arg_types_llvm.push_back(llvm::Type::getDoubleTy(*context));
-      arg_vars[arg.first] = Type::kFloat;
-      arg_types.push_back(Type::kFloat);
+      arg_vars[arg.first] = types::Type::kFloat;
+      arg_types.push_back(types::Type::kFloat);
     } else
       throw std::logic_error(fmt::format("unknown arg type: {}", arg.second));
   }
   llvm::Type *return_type_llvm;
-  Type return_type;
+  types::Type return_type;
   if (node.proto.return_type == "int") {
-    return_type = Type::kInt;
+    return_type = types::Type::kInt;
     return_type_llvm = llvm::Type::getInt32Ty(*context);
   } else if (node.proto.return_type == "float") {
-    return_type = Type::kFloat;
+    return_type = types::Type::kFloat;
     return_type_llvm = llvm::Type::getDoubleTy(*context);
   } else if (node.proto.return_type == "bool") {
-    return_type = Type::kBool;
+    return_type = types::Type::kBool;
     return_type_llvm = llvm::Type::getInt1Ty(*context);
   } else if (node.proto.return_type == "void") {
-    return_type = Type::kVoid;
+    return_type = types::Type::kVoid;
     return_type_llvm = llvm::Type::getVoidTy(*context);
   } else
     throw std::logic_error(
@@ -86,58 +87,58 @@ void IRGen::operator()(FunctionNode &node) {
   for (auto &arg : func->args())
     global_symbols.erase(std::string(arg.getName()));
   switch (return_type) {
-  case Type::kInt:
+  case types::Type::kInt:
     builder->CreateRet(builder->CreateFPToSI(ret, builder->getInt32Ty()));
     break;
-  case Type::kFloat:
+  case types::Type::kFloat:
     builder->CreateRet(builder->CreateSIToFP(ret, builder->getDoubleTy()));
     break;
-  case Type::kBool:
+  case types::Type::kBool:
     builder->CreateRet(ret);
     break;
-  case Type::kVoid:
+  case types::Type::kVoid:
     builder->CreateRetVoid();
     break;
   }
   llvm::verifyFunction(*func);
 }
 
-llvm::Value *IRGen::operator()(LiteralExprNode<int> &node) {
+llvm::Value *IRGen::operator()(ast::LiteralExprNode<int> &node) {
   return llvm::ConstantInt::get(
       *context, llvm::APInt(32, static_cast<uint64_t>(node.value), true));
 }
 
-llvm::Value *IRGen::operator()(LiteralExprNode<double> &node) {
+llvm::Value *IRGen::operator()(ast::LiteralExprNode<double> &node) {
   return llvm::ConstantFP::get(*context, llvm::APFloat(node.value));
 }
 
-llvm::Value *IRGen::operator()(VariableExprNode &node) {
+llvm::Value *IRGen::operator()(ast::VariableExprNode &node) {
   return global_symbols.at(node.name);
 }
 
-llvm::Value *IRGen::operator()(std::unique_ptr<BinaryExprNode> &node) {
+llvm::Value *IRGen::operator()(std::unique_ptr<ast::BinaryExprNode> &node) {
   auto lhs_val = std::visit(*this, node->lhs),
        rhs_val = std::visit(*this, node->rhs);
   if (lhs_val == nullptr || rhs_val == nullptr)
     throw std::logic_error("failed to codegen lhs or rhs");
 
-  ExprTypeChecker checker(globals, functions);
+  types::ExprTypeChecker checker(globals, functions);
   auto lhs_type = std::visit(checker, node->lhs),
        rhs_type = std::visit(checker, node->rhs);
   if (node->op == "+") {
-    if (lhs_type == Type::kInt && rhs_type == Type::kInt)
+    if (lhs_type == types::Type::kInt && rhs_type == types::Type::kInt)
       return builder->CreateAdd(lhs_val, rhs_val);
     return builder->CreateFAdd(
         builder->CreateSIToFP(lhs_val, builder->getDoubleTy()),
         builder->CreateSIToFP(rhs_val, builder->getDoubleTy()));
   } else if (node->op == "-") {
-    if (lhs_type == Type::kInt && rhs_type == Type::kInt)
+    if (lhs_type == types::Type::kInt && rhs_type == types::Type::kInt)
       return builder->CreateSub(lhs_val, rhs_val);
     return builder->CreateFSub(
         builder->CreateSIToFP(lhs_val, builder->getDoubleTy()),
         builder->CreateSIToFP(rhs_val, builder->getDoubleTy()));
   } else if (node->op == "*") {
-    if (lhs_type == Type::kInt && rhs_type == Type::kInt)
+    if (lhs_type == types::Type::kInt && rhs_type == types::Type::kInt)
       return builder->CreateMul(lhs_val, rhs_val);
     return builder->CreateFMul(
         builder->CreateSIToFP(lhs_val, builder->getDoubleTy()),
@@ -146,35 +147,35 @@ llvm::Value *IRGen::operator()(std::unique_ptr<BinaryExprNode> &node) {
     auto div = builder->CreateFDiv(
         builder->CreateSIToFP(lhs_val, builder->getDoubleTy()),
         builder->CreateSIToFP(rhs_val, builder->getDoubleTy()));
-    if (lhs_type == Type::kInt && rhs_type == Type::kInt)
+    if (lhs_type == types::Type::kInt && rhs_type == types::Type::kInt)
       return builder->CreateFPToSI(div, builder->getInt32Ty());
     return div;
   } else if (node->op == "==") {
-    if (lhs_type == Type::kInt && rhs_type == Type::kInt)
+    if (lhs_type == types::Type::kInt && rhs_type == types::Type::kInt)
       return builder->CreateICmpEQ(lhs_val, rhs_val);
     return builder->CreateFCmpOEQ(
         builder->CreateSIToFP(lhs_val, builder->getDoubleTy()),
         builder->CreateSIToFP(rhs_val, builder->getDoubleTy()));
   } else if (node->op == "<") {
-    if (lhs_type == Type::kInt && rhs_type == Type::kInt)
+    if (lhs_type == types::Type::kInt && rhs_type == types::Type::kInt)
       return builder->CreateICmpSLT(lhs_val, rhs_val);
     return builder->CreateFCmpOLT(
         builder->CreateSIToFP(lhs_val, builder->getDoubleTy()),
         builder->CreateSIToFP(rhs_val, builder->getDoubleTy()));
   } else if (node->op == "<=") {
-    if (lhs_type == Type::kInt && rhs_type == Type::kInt)
+    if (lhs_type == types::Type::kInt && rhs_type == types::Type::kInt)
       return builder->CreateICmpSLE(lhs_val, rhs_val);
     return builder->CreateFCmpOLE(
         builder->CreateSIToFP(lhs_val, builder->getDoubleTy()),
         builder->CreateSIToFP(rhs_val, builder->getDoubleTy()));
   } else if (node->op == ">") {
-    if (lhs_type == Type::kInt && rhs_type == Type::kInt)
+    if (lhs_type == types::Type::kInt && rhs_type == types::Type::kInt)
       return builder->CreateICmpSGT(lhs_val, rhs_val);
     return builder->CreateFCmpOGT(
         builder->CreateSIToFP(lhs_val, builder->getDoubleTy()),
         builder->CreateSIToFP(rhs_val, builder->getDoubleTy()));
   } else if (node->op == ">=") {
-    if (lhs_type == Type::kInt && rhs_type == Type::kInt)
+    if (lhs_type == types::Type::kInt && rhs_type == types::Type::kInt)
       return builder->CreateICmpSGE(lhs_val, rhs_val);
     return builder->CreateFCmpOGE(
         builder->CreateSIToFP(lhs_val, builder->getDoubleTy()),
@@ -183,11 +184,11 @@ llvm::Value *IRGen::operator()(std::unique_ptr<BinaryExprNode> &node) {
     throw std::logic_error(fmt::format("unsupported operator: {}", node->op));
 }
 
-llvm::Value *IRGen::operator()(std::unique_ptr<CallExprNode> &node) {
+llvm::Value *IRGen::operator()(std::unique_ptr<ast::CallExprNode> &node) {
   auto callee_func = module->getFunction(node->callee);
   if (callee_func == nullptr)
     throw std::logic_error(fmt::format("unknown function: {}", node->callee));
-  ExprTypeChecker checker(globals, functions);
+  types::ExprTypeChecker checker(globals, functions);
   if (callee_func->arg_size() != functions[node->callee].second.size())
     throw std::logic_error("incorrect number of args passed");
   std::vector<llvm::Value *> arg_values;
@@ -195,33 +196,33 @@ llvm::Value *IRGen::operator()(std::unique_ptr<CallExprNode> &node) {
   for (auto &arg : node->args) {
     auto val = std::visit(*this, arg);
     auto arg_type = *(it++);
-    if (arg_type == Type::kInt)
+    if (arg_type == types::Type::kInt)
       arg_values.push_back(builder->CreateFPToSI(val, builder->getInt32Ty()));
-    else if (arg_type == Type::kFloat)
+    else if (arg_type == types::Type::kFloat)
       arg_values.push_back(builder->CreateSIToFP(val, builder->getDoubleTy()));
   }
   return builder->CreateCall(callee_func, arg_values);
 }
 
-llvm::Value *IRGen::operator()(std::unique_ptr<IfExprNode> &node) {
+llvm::Value *IRGen::operator()(std::unique_ptr<ast::IfExprNode> &node) {
   auto condition_value = std::visit(*this, node->condition);
   auto parent_func = builder->GetInsertBlock()->getParent();
   auto then_block = llvm::BasicBlock::Create(*context, "then", parent_func),
        else_block = llvm::BasicBlock::Create(*context, "else"),
        merge_block = llvm::BasicBlock::Create(*context, "cont");
-  ExprTypeChecker checker(globals, functions);
+  types::ExprTypeChecker checker(globals, functions);
   auto return_type = checker(node);
   builder->CreateCondBr(condition_value, then_block, else_block);
   builder->SetInsertPoint(then_block);
   auto then_value = std::visit(*this, node->then_expr);
-  if (return_type == Type::kFloat)
+  if (return_type == types::Type::kFloat)
     then_value = builder->CreateSIToFP(then_value, builder->getDoubleTy());
   builder->CreateBr(merge_block);
   then_block = builder->GetInsertBlock();
   parent_func->getBasicBlockList().push_back(else_block);
   builder->SetInsertPoint(else_block);
   auto else_value = std::visit(*this, node->else_expr);
-  if (return_type == Type::kFloat)
+  if (return_type == types::Type::kFloat)
     else_value = builder->CreateSIToFP(else_value, builder->getDoubleTy());
   builder->CreateBr(merge_block);
   else_block = builder->GetInsertBlock();
@@ -229,19 +230,20 @@ llvm::Value *IRGen::operator()(std::unique_ptr<IfExprNode> &node) {
   builder->SetInsertPoint(merge_block);
   llvm::PHINode *phi_node;
   switch (return_type) {
-  case Type::kInt:
+  case types::Type::kInt:
     phi_node = builder->CreatePHI(builder->getInt32Ty(), 2);
     break;
-  case Type::kFloat:
+  case types::Type::kFloat:
     phi_node = builder->CreatePHI(builder->getDoubleTy(), 2);
     break;
-  case Type::kBool:
+  case types::Type::kBool:
     phi_node = builder->CreatePHI(builder->getInt1Ty(), 2);
     break;
-  case Type::kVoid:
+  case types::Type::kVoid:
     return nullptr;
   }
   phi_node->addIncoming(then_value, then_block);
   phi_node->addIncoming(else_value, else_block);
   return phi_node;
 }
+} // namespace stapl::ir

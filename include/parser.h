@@ -10,6 +10,7 @@
 #include <utility>
 #include <vector>
 
+namespace stapl::parsing {
 /**
   Parser for stapl.
  */
@@ -32,7 +33,7 @@ public:
     literal = intliteral | floatliteral ;
     ```
    */
-  LiteralExprNode<int> parse_int();
+  ast::LiteralExprNode<int> parse_int();
 
   /**
     Parse floating-point literals.
@@ -42,7 +43,7 @@ public:
     literal = intliteral | floatliteral ;
     ```
    */
-  LiteralExprNode<double> parse_float();
+  ast::LiteralExprNode<double> parse_float();
 
   /**
     Parse expression and create an ``ExprNode``.
@@ -51,7 +52,7 @@ public:
     expr = primary , binoprhs ;
     ```
    */
-  ExprNode parse_expr();
+  ast::ExprNode parse_expr();
 
   /**
     Parse an expression inside a paren.
@@ -60,7 +61,7 @@ public:
     parenexpr = "(" , expr , ")" ;
     ```
    */
-  ExprNode parse_paren_expr();
+  ast::ExprNode parse_paren_expr();
 
   /**
     Parse an identifier.
@@ -70,7 +71,7 @@ public:
                | identifier , "(" , expr , { "," , expr } , ")" ;
     ```
    */
-  ExprNode parse_identifier();
+  ast::ExprNode parse_identifier();
 
   /**
     Parse a primary expression, which is one of identifier, literal and paren
@@ -80,7 +81,7 @@ public:
     primary = identifier | literal | parenexpr ;
     ```
    */
-  ExprNode parse_primary();
+  ast::ExprNode parse_primary();
 
   /**
     Parse a binary operator and rhs.
@@ -90,7 +91,7 @@ public:
     binoprhs = { operator , primary }- ;
     ```
    */
-  ExprNode parse_binop_rhs(int prec, ExprNode lhs);
+  ast::ExprNode parse_binop_rhs(int prec, ast::ExprNode lhs);
 
   /**
     Parse an ``if`` expression.
@@ -99,7 +100,7 @@ public:
     ifexpr = "if" | expr | "then" | expr | "else" | expr ;
     ```
    */
-  ExprNode parse_if();
+  ast::ExprNode parse_if();
 
   /**
     Parse a function prototype.
@@ -112,7 +113,7 @@ public:
         ":" , typename;
     ```
    */
-  PrototypeNode parse_proto();
+  ast::PrototypeNode parse_proto();
 
   /**
     Parse a ``def`` statement.
@@ -121,7 +122,7 @@ public:
     funcdef = "def" , proto , expr ;
     ```
    */
-  FunctionNode parse_def();
+  ast::FunctionNode parse_def();
 
   /**
     Parse toplevel expression.
@@ -130,7 +131,7 @@ public:
     toplevelexpr = expr ;
     ```
    */
-  FunctionNode parse_toplevel_expr();
+  ast::FunctionNode parse_toplevel_expr();
 
   /**
     Parse an extern function.
@@ -139,7 +140,8 @@ public:
     externfunc = "extern" , proto ;
     ```
    */
-  FunctionNode parse_extern();
+  ast::FunctionNode parse_extern();
 
-  std::vector<StatementNode> parse_all();
+  std::vector<ast::StatementNode> parse_all();
 };
+} // namespace stapl::parsing

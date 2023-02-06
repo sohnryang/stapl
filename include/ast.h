@@ -8,6 +8,7 @@
 #include <variant>
 #include <vector>
 
+namespace stapl::ast {
 /**
   AST node for literal expressions, such as numbers.
  */
@@ -113,3 +114,4 @@ struct FunctionNode {
   Variant for statement nodes.
  */
 using StatementNode = std::variant<FunctionNode>;
+} // namespace stapl::ast

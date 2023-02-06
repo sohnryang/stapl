@@ -16,14 +16,16 @@
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Value.h>
 
+namespace stapl::ir {
 /**
   A class for generating IR from AST.
  */
 class IRGen {
 private:
-  std::map<std::string, Type> globals;
+  std::map<std::string, types::Type> globals;
   std::map<std::string, llvm::Value *> global_symbols;
-  std::map<std::string, std::pair<Type, std::vector<Type>>> functions;
+  std::map<std::string, std::pair<types::Type, std::vector<types::Type>>>
+      functions;
   std::unique_ptr<llvm::LLVMContext> context;
   std::unique_ptr<llvm::Module> module;
   std::unique_ptr<llvm::IRBuilder<>> builder;
@@ -33,14 +35,16 @@ public:
   /**
     Generate LLVM IR and write it to supplied path.
    */
-  void codegen(std::string const &filename, std::vector<StatementNode> &ast);
+  void codegen(std::string const &filename,
+               std::vector<ast::StatementNode> &ast);
 
-  void operator()(FunctionNode &node);
+  void operator()(ast::FunctionNode &node);
 
-  llvm::Value *operator()(LiteralExprNode<int> &node);
-  llvm::Value *operator()(LiteralExprNode<double> &node);
-  llvm::Value *operator()(VariableExprNode &node);
-  llvm::Value *operator()(std::unique_ptr<BinaryExprNode> &node);
-  llvm::Value *operator()(std::unique_ptr<CallExprNode> &node);
-  llvm::Value *operator()(std::unique_ptr<IfExprNode> &node);
+  llvm::Value *operator()(ast::LiteralExprNode<int> &node);
+  llvm::Value *operator()(ast::LiteralExprNode<double> &node);
+  llvm::Value *operator()(ast::VariableExprNode &node);
+  llvm::Value *operator()(std::unique_ptr<ast::BinaryExprNode> &node);
+  llvm::Value *operator()(std::unique_ptr<ast::CallExprNode> &node);
+  llvm::Value *operator()(std::unique_ptr<ast::IfExprNode> &node);
 };
+} // namespace stapl::ir

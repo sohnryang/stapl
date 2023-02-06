@@ -16,6 +16,9 @@
 #include <boost/program_options.hpp>
 
 namespace po = boost::program_options;
+using stapl::ast::ASTPrinter;
+using stapl::ir::IRGen;
+using stapl::parsing::Parser;
 
 int main(int argc, char *argv[]) {
   po::options_description desc("staplc -- Stapl Compiler");

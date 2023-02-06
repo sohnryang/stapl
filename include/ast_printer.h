@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 
+namespace stapl::ast {
 /**
   A visitor for printing AST nodes.
  */
@@ -19,3 +20,4 @@ public:
   std::string operator()(const PrototypeNode &node) const;
   std::string operator()(const FunctionNode &node) const;
 };
+} // namespace stapl::ast
