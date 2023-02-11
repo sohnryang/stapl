@@ -14,7 +14,7 @@ Lexer::Lexer(std::string code)
                                              {'%', {'\0'}}}),
       token_table({{"def", TokenKind::kDef},
                    {"extern", TokenKind::kExtern},
-                   {"if", TokenKind::kInt},
+                   {"if", TokenKind::kIf},
                    {"else", TokenKind::kElse},
                    {"let", TokenKind::kLet},
                    {"return", TokenKind::kReturn}}) {
