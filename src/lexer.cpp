@@ -4,7 +4,14 @@
 
 namespace stapl::parsing {
 Lexer::Lexer(std::string code)
-    : code(code), last_char(' '), operator_dfa(),
+    : code(code), last_char(' '), operator_dfa({{'<', {'\0', '='}},
+                                                {'>', {'\0', '='}},
+                                                {'=', {'\0', '='}},
+                                                {'+', {'\0'}},
+                                                {'-', {'\0'}},
+                                                {'*', {'\0'}},
+                                                {'/', {'\0'}},
+                                                {'%', {'\0'}}}),
       token_table({{"def", TokenKind::kDef},
                    {"extern", TokenKind::kExtern},
                    {"if", TokenKind::kInt},
@@ -15,13 +22,6 @@ Lexer::Lexer(std::string code)
                    {"let", TokenKind::kLet},
                    {"return", TokenKind::kReturn}}) {
   it = this->code.begin();
-  operator_dfa['<'] = {'\0', '='};
-  operator_dfa['>'] = {'\0', '='};
-  operator_dfa['='] = {'\0', '='};
-  operator_dfa['+'] = {'\0'};
-  operator_dfa['-'] = {'\0'};
-  operator_dfa['*'] = {'\0'};
-  operator_dfa['/'] = {'\0'};
 }
 
 Token Lexer::get_token() {
