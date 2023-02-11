@@ -20,7 +20,6 @@ enum class TokenKind {
   kLet,
   kReturn,
   kOp,
-  kAssignOp,
   kMisc,
 };
 typedef std::pair<TokenKind, std::string> Token;
