@@ -19,7 +19,7 @@ enum class TokenKind {
   kFloat,
   kLet,
   kReturn,
-  kBinOp,
+  kOp,
   kAssignOp,
   kMisc,
 };
