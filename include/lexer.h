@@ -31,6 +31,7 @@ private:
   std::string identifier, op, code;
   std::string::iterator it;
   std::map<int, std::set<int>> operator_dfa;
+  std::map<std::string, TokenKind> token_table;
   int last_char;
 
 public:

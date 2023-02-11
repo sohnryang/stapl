@@ -3,7 +3,17 @@
 #include <cctype>
 
 namespace stapl::parsing {
-Lexer::Lexer(std::string code) : code(code), last_char(' '), operator_dfa() {
+Lexer::Lexer(std::string code)
+    : code(code), last_char(' '), operator_dfa(),
+      token_table({{"def", TokenKind::kDef},
+                   {"extern", TokenKind::kExtern},
+                   {"if", TokenKind::kInt},
+                   {"else", TokenKind::kElse},
+                   {"int", TokenKind::kInt},
+                   {"float", TokenKind::kFloat},
+                   {"void", TokenKind::kVoid},
+                   {"let", TokenKind::kLet},
+                   {"return", TokenKind::kReturn}}) {
   it = this->code.begin();
   operator_dfa['<'] = {'\0', '='};
   operator_dfa['>'] = {'\0', '='};
@@ -21,19 +31,10 @@ Token Lexer::get_token() {
     identifier = last_char;
     while (std::isalnum(last_char = *(it++)) || last_char == '_')
       identifier += last_char;
-    if (identifier == "def")
-      return {TokenKind::kDef, identifier};
-    if (identifier == "extern")
-      return {TokenKind::kExtern, identifier};
-    if (identifier == "if")
-      return {TokenKind::kIf, identifier};
-    if (identifier == "then")
-      return {TokenKind::kThen, identifier};
-    if (identifier == "else")
-      return {TokenKind::kElse, identifier};
-    if (identifier == "for")
-      return {TokenKind::kFor, identifier};
-    return {TokenKind::kIdentifier, identifier};
+    auto kind = TokenKind::kIdentifier;
+    if (token_table.contains(identifier))
+      kind = token_table[identifier];
+    return {kind, identifier};
   }
 
   if (std::isdigit(last_char) || last_char == '.') {
