@@ -64,3 +64,18 @@ TEST(LexerTest, If) {
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kInt, "0"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kEof, ""));
 }
+
+TEST(LexerTest, Let) {
+  Lexer lexer("let x: int");
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kLet, "let"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kIdentifier, "x"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kMisc, ":"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kIdentifier, "int"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kEof, ""));
+}
+
+TEST(LexerTest, Return) {
+  Lexer lexer("return 42");
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kReturn, "return"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kInt, "42"));
+}
