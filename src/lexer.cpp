@@ -4,14 +4,14 @@
 
 namespace stapl::parsing {
 Lexer::Lexer(std::string code)
-    : code(code), last_char(' '), binop_dfa({{'<', {'\0', '='}},
-                                             {'>', {'\0', '='}},
-                                             {'=', {'\0', '='}},
-                                             {'+', {'\0'}},
-                                             {'-', {'\0'}},
-                                             {'*', {'\0'}},
-                                             {'/', {'\0'}},
-                                             {'%', {'\0'}}}),
+    : code(code), last_char(' '), operator_dfa({{'<', {'\0', '='}},
+                                                {'>', {'\0', '='}},
+                                                {'=', {'\0', '='}},
+                                                {'+', {'\0'}},
+                                                {'-', {'\0'}},
+                                                {'*', {'\0'}},
+                                                {'/', {'\0'}},
+                                                {'%', {'\0'}}}),
       token_table({{"def", TokenKind::kDef},
                    {"extern", TokenKind::kExtern},
                    {"if", TokenKind::kIf},
@@ -58,10 +58,10 @@ Token Lexer::get_token() {
 
   int this_char = last_char;
   last_char = *(it++);
-  if (!binop_dfa.count(this_char))
+  if (!operator_dfa.count(this_char))
     return {TokenKind::kMisc, std::string(1, this_char)};
   op = this_char;
-  while (binop_dfa[op.back()].contains(last_char)) {
+  while (operator_dfa[op.back()].contains(last_char)) {
     op += last_char;
     last_char = *(it++);
   }
