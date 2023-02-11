@@ -17,7 +17,6 @@ enum class TokenKind {
   kIdentifier,
   kInt,
   kFloat,
-  kVoid,
   kLet,
   kReturn,
   kBinOp,

@@ -16,9 +16,6 @@ Lexer::Lexer(std::string code)
                    {"extern", TokenKind::kExtern},
                    {"if", TokenKind::kInt},
                    {"else", TokenKind::kElse},
-                   {"int", TokenKind::kInt},
-                   {"float", TokenKind::kFloat},
-                   {"void", TokenKind::kVoid},
                    {"let", TokenKind::kLet},
                    {"return", TokenKind::kReturn}}) {
   it = this->code.begin();
