@@ -13,13 +13,15 @@ enum class TokenKind {
   kDef,
   kExtern,
   kIf,
-  kThen,
   kElse,
-  kFor,
   kIdentifier,
   kInt,
   kFloat,
-  kOp,
+  kVoid,
+  kLet,
+  kReturn,
+  kBinOp,
+  kAssignOp,
   kMisc,
 };
 typedef std::pair<TokenKind, std::string> Token;

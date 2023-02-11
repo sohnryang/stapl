@@ -67,6 +67,6 @@ Token Lexer::get_token() {
     op += last_char;
     last_char = *(it++);
   }
-  return {TokenKind::kOp, op};
+  return {TokenKind::kBinOp, op};
 }
 } // namespace stapl::parsing
