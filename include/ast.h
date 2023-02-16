@@ -43,8 +43,7 @@ struct VariableExprNode {
 using ExprNode =
     std::variant<LiteralExprNode<int>, LiteralExprNode<double>,
                  VariableExprNode, std::unique_ptr<struct BinaryExprNode>,
-                 std::unique_ptr<struct CallExprNode>,
-                 std::unique_ptr<struct IfExprNode>>;
+                 std::unique_ptr<struct CallExprNode>>;
 
 /**
   AST node for binary expressions.
@@ -71,29 +70,81 @@ struct CallExprNode {
 };
 
 /**
-  AST node for if expressions.
- */
-struct IfExprNode {
-  ExprNode condition, then_expr, else_expr;
-
-  IfExprNode(IfExprNode &&) = default;
-  IfExprNode(ExprNode condition, ExprNode then_expr, ExprNode else_expr);
-  IfExprNode &operator=(IfExprNode &&) = default;
-};
-
-/**
   AST node for function prototype.
  */
 struct PrototypeNode {
-  std::string name;
-  std::string return_type;
+  std::string name, return_type;
   std::vector<std::pair<std::string, std::string>> args;
 
   PrototypeNode(PrototypeNode &&) = default;
   PrototypeNode(const std::string &name,
                 std::vector<std::pair<std::string, std::string>> args,
-                std::string return_type);
+                const std::string &return_type);
   PrototypeNode &operator=(PrototypeNode &&) = default;
+};
+
+/**
+  AST node for let statement.
+ */
+struct LetStmtNode {
+  std::string var_name, var_type;
+
+  LetStmtNode(LetStmtNode &&) = default;
+  LetStmtNode(const std::string &var_name, const std::string &var_type);
+  LetStmtNode &operator=(LetStmtNode &&) = default;
+};
+
+/**
+  AST node for assignment statement.
+ */
+struct AssignmentStmtNode {
+  std::string var_name;
+  ExprNode assign_expr;
+
+  AssignmentStmtNode(AssignmentStmtNode &&) = default;
+  AssignmentStmtNode(const std::string &var_name, ExprNode assign_expr);
+  AssignmentStmtNode &operator=(AssignmentStmtNode &&) = default;
+};
+
+/**
+  AST node for return statement.
+ */
+struct ReturnStmtNode {
+  ExprNode return_expr;
+  ReturnStmtNode(ReturnStmtNode &&) = default;
+  ReturnStmtNode(ExprNode return_expr);
+  ReturnStmtNode &operator=(ReturnStmtNode &&) = default;
+};
+
+/**
+  Variant for statement nodes.
+ */
+using StmtNode =
+    std::variant<LetStmtNode, AssignmentStmtNode,
+                 std::unique_ptr<struct IfStmtNode>, ReturnStmtNode,
+                 std::unique_ptr<struct CompoundStmtNode>>;
+
+/**
+  AST node for if statement.
+ */
+struct IfStmtNode {
+  ExprNode condition;
+  StmtNode then_stmt, else_stmt;
+
+  IfStmtNode(IfStmtNode &&) = default;
+  IfStmtNode(ExprNode condition, StmtNode then_stmt, StmtNode else_stmt);
+  IfStmtNode &operator=(IfStmtNode &&) = default;
+};
+
+/**
+  AST node for compound statement.
+ */
+struct CompoundStmtNode {
+  std::vector<std::unique_ptr<StmtNode>> stmts;
+
+  CompoundStmtNode(CompoundStmtNode &&) = default;
+  CompoundStmtNode(std::vector<std::unique_ptr<StmtNode>> stmts);
+  CompoundStmtNode &operator=(CompoundStmtNode &&) = default;
 };
 
 /**
@@ -109,9 +160,4 @@ struct FunctionNode {
   FunctionNode(PrototypeNode proto);
   FunctionNode &operator=(FunctionNode &&) = default;
 };
-
-/**
-  Variant for statement nodes.
- */
-using StatementNode = std::variant<FunctionNode>;
 } // namespace stapl::ast
