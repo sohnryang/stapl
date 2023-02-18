@@ -45,7 +45,7 @@ CompoundStmtNode::CompoundStmtNode(std::vector<std::unique_ptr<StmtNode>> stmts)
     : stmts(std::move(stmts)) {}
 
 FunctionDeclNode::FunctionDeclNode(PrototypeNode proto,
-                                   CompoundStmtNode func_body)
+                                   std::unique_ptr<CompoundStmtNode> func_body)
     : proto(std::move(proto)), func_body(std::move(func_body)) {}
 
 FunctionDeclNode::FunctionDeclNode(PrototypeNode proto)

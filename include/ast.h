@@ -152,10 +152,11 @@ struct CompoundStmtNode {
  */
 struct FunctionDeclNode {
   PrototypeNode proto;
-  std::optional<CompoundStmtNode> func_body;
+  std::optional<std::unique_ptr<CompoundStmtNode>> func_body;
 
   FunctionDeclNode(FunctionDeclNode &&) = default;
-  FunctionDeclNode(PrototypeNode proto, CompoundStmtNode func_body);
+  FunctionDeclNode(PrototypeNode proto,
+                   std::unique_ptr<CompoundStmtNode> func_body);
   FunctionDeclNode(PrototypeNode proto);
   FunctionDeclNode &operator=(FunctionDeclNode &&) = default;
 };
