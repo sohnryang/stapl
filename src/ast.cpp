@@ -45,11 +45,10 @@ CompoundStmtNode::CompoundStmtNode(std::vector<std::unique_ptr<StmtNode>> stmts)
     : stmts(std::move(stmts)) {}
 
 FunctionNode::FunctionNode(PrototypeNode proto, ExprNode func_body)
-    : proto(std::move(proto)), func_body(std::move(func_body)),
-      extern_func(false) {}
+    : proto(std::move(proto)), func_body(std::move(func_body)) {}
 
 FunctionNode::FunctionNode(PrototypeNode proto)
-    : proto(std::move(proto)), func_body({}), extern_func(true) {}
+    : proto(std::move(proto)), func_body({}) {}
 
 template class LiteralExprNode<int>;
 template class LiteralExprNode<double>;

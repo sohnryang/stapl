@@ -153,7 +153,6 @@ struct CompoundStmtNode {
 struct FunctionNode {
   PrototypeNode proto;
   std::optional<ExprNode> func_body;
-  bool extern_func;
 
   FunctionNode(FunctionNode &&) = default;
   FunctionNode(PrototypeNode proto, ExprNode func_body);
