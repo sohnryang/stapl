@@ -11,7 +11,7 @@ The grammar of stapl language is defined as follows:
    module = { item } ;
 
    item = func_def | extern_func ;
-   func_def = "def" , proto , stmt_list ;
+   func_def = "def" , proto , compound_stmt ;
    extern_func = "extern" , proto ;
 
    proto = id , "(" , [ param_list ] , ")" , ":" , return_type ;
@@ -24,7 +24,7 @@ The grammar of stapl language is defined as follows:
    let_stmt = "let" , id , ":" , type_name ;
    assign_operator = "=" ;
    assign_stmt = id , assign_operator , expr ;
-   if_stmt = "if" , expr , stmt_list , else , stmt ;
+   if_stmt = "if" , expr , compound_stmt , else , stmt ;
    return_stmt = "return" , expr ;
    compound_stmt = "{" , { stmt } , "}" ;
 
