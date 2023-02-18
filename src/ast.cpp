@@ -44,10 +44,11 @@ IfStmtNode::IfStmtNode(ExprNode condition, StmtNode then_stmt,
 CompoundStmtNode::CompoundStmtNode(std::vector<std::unique_ptr<StmtNode>> stmts)
     : stmts(std::move(stmts)) {}
 
-FunctionNode::FunctionNode(PrototypeNode proto, CompoundStmtNode func_body)
+FunctionDeclNode::FunctionDeclNode(PrototypeNode proto,
+                                   CompoundStmtNode func_body)
     : proto(std::move(proto)), func_body(std::move(func_body)) {}
 
-FunctionNode::FunctionNode(PrototypeNode proto)
+FunctionDeclNode::FunctionDeclNode(PrototypeNode proto)
     : proto(std::move(proto)), func_body({}) {}
 
 template class LiteralExprNode<int>;

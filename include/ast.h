@@ -150,13 +150,13 @@ struct CompoundStmtNode {
 /**
   AST node for function definition.
  */
-struct FunctionNode {
+struct FunctionDeclNode {
   PrototypeNode proto;
   std::optional<CompoundStmtNode> func_body;
 
-  FunctionNode(FunctionNode &&) = default;
-  FunctionNode(PrototypeNode proto, CompoundStmtNode func_body);
-  FunctionNode(PrototypeNode proto);
-  FunctionNode &operator=(FunctionNode &&) = default;
+  FunctionDeclNode(FunctionDeclNode &&) = default;
+  FunctionDeclNode(PrototypeNode proto, CompoundStmtNode func_body);
+  FunctionDeclNode(PrototypeNode proto);
+  FunctionDeclNode &operator=(FunctionDeclNode &&) = default;
 };
 } // namespace stapl::ast
