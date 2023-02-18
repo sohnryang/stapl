@@ -159,4 +159,9 @@ struct FunctionDeclNode {
   FunctionDeclNode(PrototypeNode proto);
   FunctionDeclNode &operator=(FunctionDeclNode &&) = default;
 };
+
+/**
+  Variant for declaration nodes.
+ */
+using DeclNode = std::variant<FunctionDeclNode>;
 } // namespace stapl::ast
