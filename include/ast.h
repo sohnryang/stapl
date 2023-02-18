@@ -152,10 +152,10 @@ struct CompoundStmtNode {
  */
 struct FunctionNode {
   PrototypeNode proto;
-  std::optional<ExprNode> func_body;
+  std::optional<CompoundStmtNode> func_body;
 
   FunctionNode(FunctionNode &&) = default;
-  FunctionNode(PrototypeNode proto, ExprNode func_body);
+  FunctionNode(PrototypeNode proto, CompoundStmtNode func_body);
   FunctionNode(PrototypeNode proto);
   FunctionNode &operator=(FunctionNode &&) = default;
 };
