@@ -38,16 +38,16 @@ TEST(ParserTest, Prototype) {
 TEST(ParserTest, Expr) {
   Parser parser("a*a + b*b - c*c");
   auto node = parser.parse_expr();
-  EXPECT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(node));
+  ASSERT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(node));
   auto toplevel_binexpr =
       std::move(std::get<std::unique_ptr<BinaryExprNode>>(node));
   EXPECT_EQ(toplevel_binexpr->op, "-");
-  EXPECT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(
+  ASSERT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(
       toplevel_binexpr->lhs));
   auto toplevel_lhs = std::move(
       std::get<std::unique_ptr<BinaryExprNode>>(toplevel_binexpr->lhs));
   EXPECT_EQ(toplevel_lhs->op, "+");
-  EXPECT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(
+  ASSERT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(
       toplevel_binexpr->rhs));
   auto toplevel_rhs = std::move(
       std::get<std::unique_ptr<BinaryExprNode>>(toplevel_binexpr->rhs));
@@ -63,11 +63,11 @@ TEST(ParserTest, Expr) {
 TEST(ParserTest, ParenExpr) {
   Parser parser("(a + b)*(a + b)");
   auto node = parser.parse_expr();
-  EXPECT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(node));
+  ASSERT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(node));
   auto toplevel_binexpr =
       std::move(std::get<std::unique_ptr<BinaryExprNode>>(node));
   EXPECT_EQ(toplevel_binexpr->op, "*");
-  EXPECT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(
+  ASSERT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(
       toplevel_binexpr->lhs));
   auto toplevel_lhs = std::move(
       std::get<std::unique_ptr<BinaryExprNode>>(toplevel_binexpr->lhs));
