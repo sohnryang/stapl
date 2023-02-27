@@ -36,7 +36,7 @@ TEST(ParserTest, Prototype) {
 }
 
 TEST(ParserTest, Expr) {
-  Parser parser("a*a + b*b - c*c;");
+  Parser parser("a*a + b*b - c*c");
   auto node = parser.parse_expr();
   EXPECT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(node));
   auto toplevel_binexpr =
@@ -61,7 +61,7 @@ TEST(ParserTest, Expr) {
 }
 
 TEST(ParserTest, ParenExpr) {
-  Parser parser("(a + b)*(a + b);");
+  Parser parser("(a + b)*(a + b)");
   auto node = parser.parse_expr();
   EXPECT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(node));
   auto toplevel_binexpr =
