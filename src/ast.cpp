@@ -44,8 +44,7 @@ IfStmtNode::IfStmtNode(ExprNode condition, StmtNode then_stmt,
 CompoundStmtNode::CompoundStmtNode(std::vector<std::unique_ptr<StmtNode>> stmts)
     : stmts(std::move(stmts)) {}
 
-FunctionDeclNode::FunctionDeclNode(PrototypeNode proto,
-                                   std::unique_ptr<CompoundStmtNode> func_body)
+FunctionDeclNode::FunctionDeclNode(PrototypeNode proto, StmtNode func_body)
     : proto(std::move(proto)), func_body(std::move(func_body)) {}
 
 FunctionDeclNode::FunctionDeclNode(PrototypeNode proto)

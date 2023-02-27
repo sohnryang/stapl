@@ -82,6 +82,6 @@ std::string ASTPrinter::operator()(const FunctionDeclNode &node) const {
   if (!node.func_body.has_value())
     return fmt::format("Func({})", (*this)(node.proto));
   return fmt::format("Func({}, {})", (*this)(node.proto),
-                     (*this)(node.func_body.value()));
+                     std::visit(*this, node.func_body.value()));
 }
 } // namespace stapl::ast
