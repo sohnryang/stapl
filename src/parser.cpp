@@ -41,6 +41,11 @@ ast::LiteralExprNode<double> Parser::parse_float() {
   return node;
 }
 
+ast::ExprNode Parser::parse_expr() {
+  auto lhs = parse_primary();
+  return parse_binop_rhs(0, std::move(lhs));
+}
+
 ast::ExprNode Parser::parse_paren_expr() {
   next_token();
   auto node = parse_expr();
@@ -170,11 +175,6 @@ ast::StmtNode Parser::parse_compound() {
   }
   next_token();
   return std::make_unique<ast::CompoundStmtNode>(std::move(stmts));
-}
-
-ast::ExprNode Parser::parse_expr() {
-  auto lhs = parse_primary();
-  return parse_binop_rhs(0, std::move(lhs));
 }
 
 ast::PrototypeNode Parser::parse_proto() {
