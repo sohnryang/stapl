@@ -59,6 +59,11 @@ public:
   ast::ExprNode parse_binop_rhs(int prec, ast::ExprNode lhs);
 
   /**
+    Parse argument list in function call.
+   */
+  std::vector<ast::ExprNode> parse_call_arg_list();
+
+  /**
     Parse identifier or a function call.
    */
   ast::ExprNode parse_identifier_or_func_call();

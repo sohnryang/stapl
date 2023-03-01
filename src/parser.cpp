@@ -89,13 +89,7 @@ ast::ExprNode Parser::parse_binop_rhs(int expr_prec, ast::ExprNode lhs) {
   }
 }
 
-ast::ExprNode Parser::parse_identifier_or_func_call() {
-  std::string identifier = current_token.second;
-  next_token();
-  if (current_token.second != "(")
-    return ast::VariableExprNode(identifier);
-
-  next_token();
+std::vector<ast::ExprNode> Parser::parse_call_arg_list() {
   std::vector<ast::ExprNode> args;
   if (current_token.second != ")") {
     while (true) {
@@ -110,7 +104,18 @@ ast::ExprNode Parser::parse_identifier_or_func_call() {
     }
   }
   next_token();
-  return std::make_unique<ast::CallExprNode>(identifier, std::move(args));
+  return args;
+}
+
+ast::ExprNode Parser::parse_identifier_or_func_call() {
+  std::string identifier = current_token.second;
+  next_token();
+  if (current_token.second != "(")
+    return ast::VariableExprNode(identifier);
+
+  next_token();
+  return std::make_unique<ast::CallExprNode>(identifier,
+                                             std::move(parse_call_arg_list()));
 }
 
 ast::StmtNode Parser::parse_stmt() {
