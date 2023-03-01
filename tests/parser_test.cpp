@@ -159,3 +159,37 @@ TEST(ParserTest, Extern) {
       parsed = parser.parse_extern();
   EXPECT_TRUE(decl_equals(expected, parsed));
 }
+
+TEST(ParserTest, Def) {
+  Parser parser(R"(def f(x: int, y: float): void {
+  let z: int
+  z = g(y)
+  if x >= z {
+    h(x)
+  } else {
+    h(z)
+  }
+})");
+  std::vector<ExprNode> g_call_args, h_call_args_then, h_call_args_else;
+  h_call_args_then.push_back(VariableExprNode("x"));
+  h_call_args_else.push_back(VariableExprNode("z"));
+  g_call_args.push_back(VariableExprNode("y"));
+  std::vector<StmtNode> stmts, then_stmts, else_stmts;
+  stmts.push_back(LetStmtNode("z", "int"));
+  stmts.push_back(AssignmentStmtNode(
+      "z", std::make_unique<CallExprNode>("g", std::move(g_call_args))));
+  then_stmts.push_back(AssignmentStmtNode(
+      "_", std::make_unique<CallExprNode>("h", std::move(h_call_args_then))));
+  else_stmts.push_back(AssignmentStmtNode(
+      "_", std::make_unique<CallExprNode>("h", std::move(h_call_args_else))));
+  stmts.push_back(std::make_unique<IfStmtNode>(
+      std::make_unique<BinaryExprNode>(">=", VariableExprNode("x"),
+                                       VariableExprNode("z")),
+      std::make_unique<CompoundStmtNode>(std::move(then_stmts)),
+      std::make_unique<CompoundStmtNode>(std::move(else_stmts))));
+  DeclNode expected(FunctionDeclNode(
+      PrototypeNode("f", {{"x", "int"}, {"y", "float"}}, "void"),
+      std::make_unique<CompoundStmtNode>(std::move(stmts)))),
+      parsed = parser.parse_def();
+  EXPECT_TRUE(decl_equals(expected, parsed));
+}
