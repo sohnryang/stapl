@@ -131,3 +131,23 @@ TEST(ParserTest, Return) {
       parsed = parser.parse_stmt();
   EXPECT_TRUE(stmt_equals(expected, parsed));
 }
+
+TEST(ParserTest, Compound) {
+  Parser parser(R"({
+  let x: int
+  x = 42
+  let y: float
+  y = f(x)
+})");
+  std::vector<StmtNode> stmts;
+  stmts.push_back(LetStmtNode("x", "int"));
+  stmts.push_back(AssignmentStmtNode("x", LiteralExprNode<int>(42)));
+  stmts.push_back(LetStmtNode("y", "float"));
+  std::vector<ExprNode> call_args;
+  call_args.push_back(VariableExprNode("x"));
+  stmts.push_back(AssignmentStmtNode(
+      "y", std::make_unique<CallExprNode>("f", std::move(call_args))));
+  StmtNode expected(std::make_unique<CompoundStmtNode>(std::move(stmts))),
+      parsed = parser.parse_stmt();
+  EXPECT_TRUE(stmt_equals(expected, parsed));
+}
