@@ -151,3 +151,11 @@ TEST(ParserTest, Compound) {
       parsed = parser.parse_stmt();
   EXPECT_TRUE(stmt_equals(expected, parsed));
 }
+
+TEST(ParserTest, Extern) {
+  Parser parser("extern f(x: int, y: float): void");
+  DeclNode expected(FunctionDeclNode(
+      PrototypeNode("f", {{"x", "int"}, {"y", "float"}}, "void"))),
+      parsed = parser.parse_extern();
+  EXPECT_TRUE(decl_equals(expected, parsed));
+}
