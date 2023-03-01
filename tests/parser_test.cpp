@@ -91,3 +91,31 @@ TEST(ParserTest, Assign) {
       parsed = parser.parse_stmt();
   EXPECT_TRUE(stmt_equals(parsed, expected));
 }
+
+TEST(ParserTest, If) {
+  Parser parser(R"(if x == y {
+  let z: int
+  z = 42
+} else {
+  let w: float
+  w = f(x, y)
+})");
+  std::vector<ExprNode> call_args;
+  call_args.push_back(VariableExprNode("x"));
+  call_args.push_back(VariableExprNode("y"));
+  std::vector<std::unique_ptr<StmtNode>> then_stmt_vec, else_stmt_vec;
+  then_stmt_vec.push_back(std::make_unique<StmtNode>(LetStmtNode("z", "int")));
+  then_stmt_vec.push_back(std::make_unique<StmtNode>(
+      AssignmentStmtNode("z", LiteralExprNode<int>(42))));
+  else_stmt_vec.push_back(
+      std::make_unique<StmtNode>(LetStmtNode("w", "float")));
+  else_stmt_vec.push_back(std::make_unique<StmtNode>(AssignmentStmtNode(
+      "w", std::make_unique<CallExprNode>("f", std::move(call_args)))));
+  StmtNode expected(std::make_unique<IfStmtNode>(
+      std::make_unique<BinaryExprNode>("==", VariableExprNode("x"),
+                                       VariableExprNode("y")),
+      std::make_unique<CompoundStmtNode>(std::move(then_stmt_vec)),
+      std::make_unique<CompoundStmtNode>(std::move(else_stmt_vec)))),
+      parsed = parser.parse_stmt();
+  EXPECT_TRUE(stmt_equals(expected, parsed));
+}
