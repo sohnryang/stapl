@@ -80,7 +80,7 @@ bool ASTComparator::operator()(
   if (node1->stmts.size() != node2->stmts.size())
     return false;
   for (size_t i = 0; i < node1->stmts.size(); i++)
-    if (!std::visit(*this, *(node1->stmts[i]), *(node2->stmts[i])))
+    if (!std::visit(*this, node1->stmts[i], node2->stmts[i]))
       return false;
   return true;
 }

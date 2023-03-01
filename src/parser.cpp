@@ -164,9 +164,9 @@ ast::StmtNode Parser::parse_return() {
 
 ast::StmtNode Parser::parse_compound() {
   next_token();
-  std::vector<std::unique_ptr<ast::StmtNode>> stmts;
+  std::vector<ast::StmtNode> stmts;
   while (current_token.second != "}") {
-    stmts.push_back(std::make_unique<ast::StmtNode>(parse_stmt()));
+    stmts.push_back(parse_stmt());
   }
   next_token();
   return std::make_unique<ast::CompoundStmtNode>(std::move(stmts));

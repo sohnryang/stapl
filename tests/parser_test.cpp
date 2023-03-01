@@ -103,14 +103,12 @@ TEST(ParserTest, If) {
   std::vector<ExprNode> call_args;
   call_args.push_back(VariableExprNode("x"));
   call_args.push_back(VariableExprNode("y"));
-  std::vector<std::unique_ptr<StmtNode>> then_stmt_vec, else_stmt_vec;
-  then_stmt_vec.push_back(std::make_unique<StmtNode>(LetStmtNode("z", "int")));
-  then_stmt_vec.push_back(std::make_unique<StmtNode>(
-      AssignmentStmtNode("z", LiteralExprNode<int>(42))));
-  else_stmt_vec.push_back(
-      std::make_unique<StmtNode>(LetStmtNode("w", "float")));
-  else_stmt_vec.push_back(std::make_unique<StmtNode>(AssignmentStmtNode(
-      "w", std::make_unique<CallExprNode>("f", std::move(call_args)))));
+  std::vector<StmtNode> then_stmt_vec, else_stmt_vec;
+  then_stmt_vec.push_back(LetStmtNode("z", "int"));
+  then_stmt_vec.push_back(AssignmentStmtNode("z", LiteralExprNode<int>(42)));
+  else_stmt_vec.push_back(LetStmtNode("w", "float"));
+  else_stmt_vec.push_back(AssignmentStmtNode(
+      "w", std::make_unique<CallExprNode>("f", std::move(call_args))));
   StmtNode expected(std::make_unique<IfStmtNode>(
       std::make_unique<BinaryExprNode>("==", VariableExprNode("x"),
                                        VariableExprNode("y")),

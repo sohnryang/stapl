@@ -140,10 +140,10 @@ struct IfStmtNode {
   AST node for compound statement.
  */
 struct CompoundStmtNode {
-  std::vector<std::unique_ptr<StmtNode>> stmts;
+  std::vector<StmtNode> stmts;
 
   CompoundStmtNode(CompoundStmtNode &&) = default;
-  CompoundStmtNode(std::vector<std::unique_ptr<StmtNode>> stmts);
+  CompoundStmtNode(std::vector<StmtNode> stmts);
   CompoundStmtNode &operator=(CompoundStmtNode &&) = default;
 };
 

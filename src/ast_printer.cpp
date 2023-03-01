@@ -73,7 +73,7 @@ ASTPrinter::operator()(const std::unique_ptr<CompoundStmtNode> &node) const {
   for (auto &stmt : node->stmts) {
     if (!stmt_str.empty())
       stmt_str.append(", ");
-    stmt_str.append(std::visit(*this, *stmt));
+    stmt_str.append(std::visit(*this, stmt));
   }
   return fmt::format("Compound([{}])", stmt_str);
 }
