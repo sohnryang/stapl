@@ -119,3 +119,17 @@ TEST(ParserTest, If) {
       parsed = parser.parse_stmt();
   EXPECT_TRUE(stmt_equals(expected, parsed));
 }
+
+TEST(ParserTest, Return) {
+  Parser parser("return f(42) + 10 - x");
+  std::vector<ExprNode> call_args;
+  call_args.push_back(LiteralExprNode<int>(42));
+  StmtNode expected(ReturnStmtNode(std::make_unique<BinaryExprNode>(
+      "-",
+      std::make_unique<BinaryExprNode>(
+          "+", std::make_unique<CallExprNode>("f", std::move(call_args)),
+          LiteralExprNode<int>(10)),
+      VariableExprNode("x")))),
+      parsed = parser.parse_stmt();
+  EXPECT_TRUE(stmt_equals(expected, parsed));
+}
