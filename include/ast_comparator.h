@@ -37,4 +37,19 @@ public:
     return false;
   }
 };
+
+/**
+  Helper function for comparing ``ExprNode`` variants.
+ */
+bool expr_equals(const ExprNode &expr1, const ExprNode &expr2);
+
+/**
+  Helper function for comparing ``StmtNode`` variants.
+ */
+bool stmt_equals(const StmtNode &stmt1, const StmtNode &stmt2);
+
+/**
+  Helper function for comparing ``DeclNode`` variants.
+ */
+bool decl_equals(const DeclNode &decl1, const DeclNode &decl2);
 } // namespace stapl::ast
