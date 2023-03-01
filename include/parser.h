@@ -49,13 +49,7 @@ public:
   ast::ExprNode parse_paren_expr();
 
   /**
-    Parse an identifier.
-   */
-  ast::ExprNode parse_identifier();
-
-  /**
-    Parse a primary expression, which is one of identifier, literal and paren
-    expression.
+    Parse primary, which is one of identifier, literal and paren expression.
    */
   ast::ExprNode parse_primary();
 
@@ -65,9 +59,39 @@ public:
   ast::ExprNode parse_binop_rhs(int prec, ast::ExprNode lhs);
 
   /**
-    Parse an ``if`` expression.
+    Parse identifier or a function call.
    */
-  ast::ExprNode parse_if();
+  ast::ExprNode parse_identifier_or_func_call();
+
+  /**
+    Parse a statement.
+   */
+  ast::StmtNode parse_stmt();
+
+  /**
+    Parse a ``let`` statement.
+   */
+  ast::StmtNode parse_let();
+
+  /**
+    Parse an assignment statement.
+   */
+  ast::StmtNode parse_assign();
+
+  /**
+    Parse an ``if`` statement.
+   */
+  ast::StmtNode parse_if();
+
+  /**
+    Parse a ``return`` statement.
+   */
+  ast::StmtNode parse_return();
+
+  /**
+    Parse a compound statement.
+   */
+  ast::StmtNode parse_compound();
 
   /**
     Parse a function prototype.
@@ -77,18 +101,16 @@ public:
   /**
     Parse a ``def`` statement.
    */
-  ast::FunctionNode parse_def();
-
-  /**
-    Parse toplevel expression.
-   */
-  ast::FunctionNode parse_toplevel_expr();
+  ast::FunctionDeclNode parse_def();
 
   /**
     Parse an extern function.
    */
-  ast::FunctionNode parse_extern();
+  ast::FunctionDeclNode parse_extern();
 
-  std::vector<ast::StatementNode> parse_all();
+  /**
+    Parse all declarations.
+   */
+  std::vector<ast::DeclNode> parse_all();
 };
 } // namespace stapl::parsing

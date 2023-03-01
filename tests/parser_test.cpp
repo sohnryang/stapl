@@ -1,4 +1,5 @@
 #include <ast.h>
+#include <ast_comparator.h>
 #include <parser.h>
 
 #include <memory>
@@ -27,49 +28,66 @@ TEST(ParserTest, Float) {
 
 TEST(ParserTest, Prototype) {
   Parser parser("func(a: int, b: float, c: int): int");
-  auto node = parser.parse_proto();
-  EXPECT_EQ(node.name, "func");
-  std::vector<std::pair<std::string, std::string>> args{
-      {"a", "int"}, {"b", "float"}, {"c", "int"}};
-  EXPECT_EQ(node.args, args);
-  EXPECT_EQ(node.return_type, "int");
+  PrototypeNode expected("func", {{"a", "int"}, {"b", "float"}, {"c", "int"}},
+                         "int"),
+      parsed = parser.parse_proto();
+  ASTComparator cmp;
+  EXPECT_TRUE(cmp(expected, parsed));
 }
 
 TEST(ParserTest, Expr) {
   Parser parser("a*a + b*b - c*c");
-  auto node = parser.parse_expr();
-  ASSERT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(node));
-  auto toplevel_binexpr =
-      std::move(std::get<std::unique_ptr<BinaryExprNode>>(node));
-  EXPECT_EQ(toplevel_binexpr->op, "-");
-  ASSERT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(
-      toplevel_binexpr->lhs));
-  auto toplevel_lhs = std::move(
-      std::get<std::unique_ptr<BinaryExprNode>>(toplevel_binexpr->lhs));
-  EXPECT_EQ(toplevel_lhs->op, "+");
-  ASSERT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(
-      toplevel_binexpr->rhs));
-  auto toplevel_rhs = std::move(
-      std::get<std::unique_ptr<BinaryExprNode>>(toplevel_binexpr->rhs));
-  EXPECT_EQ("*", toplevel_rhs->op);
-  auto toplevel_rhs_var1 =
-      std::move(std::get<VariableExprNode>(toplevel_rhs->lhs));
-  EXPECT_EQ(toplevel_rhs_var1.name, "c");
-  auto toplevel_rhs_var2 =
-      std::move(std::get<VariableExprNode>(toplevel_rhs->rhs));
-  EXPECT_EQ(toplevel_rhs_var2.name, "c");
+  ExprNode expected = std::make_unique<BinaryExprNode>(
+               "-",
+               std::make_unique<BinaryExprNode>(
+                   "+",
+                   std::make_unique<BinaryExprNode>("*", VariableExprNode("a"),
+                                                    VariableExprNode("a")),
+                   std::make_unique<BinaryExprNode>("*", VariableExprNode("b"),
+                                                    VariableExprNode("b"))),
+               std::make_unique<BinaryExprNode>("*", VariableExprNode("c"),
+                                                VariableExprNode("c"))),
+           parsed = parser.parse_expr();
+  EXPECT_TRUE(expr_equals(expected, parsed));
+}
+
+TEST(ParserTest, CallExpr) {
+  Parser parser("f(42, x + y, g(128))");
+  std::vector<ExprNode> args_g;
+  args_g.push_back(LiteralExprNode<int>(128));
+  std::vector<ExprNode> args_f;
+  args_f.push_back(LiteralExprNode<int>(42));
+  args_f.push_back(std::make_unique<BinaryExprNode>("+", VariableExprNode("x"),
+                                                    VariableExprNode("y")));
+  args_f.push_back(std::make_unique<CallExprNode>("g", std::move(args_g)));
+  ExprNode expected = std::make_unique<CallExprNode>("f", std::move(args_f)),
+           parsed = parser.parse_expr();
+  EXPECT_TRUE(expr_equals(expected, parsed));
 }
 
 TEST(ParserTest, ParenExpr) {
   Parser parser("(a + b)*(a + b)");
-  auto node = parser.parse_expr();
-  ASSERT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(node));
-  auto toplevel_binexpr =
-      std::move(std::get<std::unique_ptr<BinaryExprNode>>(node));
-  EXPECT_EQ(toplevel_binexpr->op, "*");
-  ASSERT_TRUE(std::holds_alternative<std::unique_ptr<BinaryExprNode>>(
-      toplevel_binexpr->lhs));
-  auto toplevel_lhs = std::move(
-      std::get<std::unique_ptr<BinaryExprNode>>(toplevel_binexpr->lhs));
-  EXPECT_EQ(toplevel_lhs->op, "+");
+  ExprNode expected = std::make_unique<BinaryExprNode>(
+               "*",
+               std::make_unique<BinaryExprNode>("+", VariableExprNode("a"),
+                                                VariableExprNode("b")),
+               std::make_unique<BinaryExprNode>("+", VariableExprNode("a"),
+                                                VariableExprNode("b"))),
+           parsed = parser.parse_expr();
+  EXPECT_TRUE(expr_equals(expected, parsed));
+}
+
+TEST(ParserTest, Let) {
+  Parser parser("let x: int");
+  StmtNode expected(LetStmtNode("x", "int")), parsed = parser.parse_stmt();
+  EXPECT_TRUE(stmt_equals(parsed, expected));
+}
+
+TEST(ParserTest, Assign) {
+  Parser parser("x = 1 + y");
+  StmtNode expected(AssignmentStmtNode(
+      "x", ExprNode(std::make_unique<BinaryExprNode>(
+               "+", LiteralExprNode<int>(1), VariableExprNode("y"))))),
+      parsed = parser.parse_stmt();
+  EXPECT_TRUE(stmt_equals(parsed, expected));
 }
