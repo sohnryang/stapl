@@ -232,4 +232,18 @@ ast::FunctionDeclNode Parser::parse_extern() {
   auto func = ast::FunctionDeclNode(std::move(proto));
   return func;
 }
+
+std::vector<ast::DeclNode> Parser::parse_all() {
+  std::vector<ast::DeclNode> decls;
+  while (true) {
+    if (current_token.first == TokenKind::kEof)
+      return decls;
+    else if (current_token.first == TokenKind::kDef)
+      decls.push_back(std::move(parse_def()));
+    else if (current_token.first == TokenKind::kExtern)
+      decls.push_back(std::move(parse_extern()));
+    else
+      throw std::logic_error("expected declaration");
+  }
+}
 } // namespace stapl::parsing
