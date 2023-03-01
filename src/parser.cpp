@@ -123,7 +123,7 @@ ast::StmtNode Parser::parse_stmt() {
   case TokenKind::kLet:
     return parse_let();
   case TokenKind::kIdentifier:
-    return parse_assign();
+    return parse_assign_or_call();
   case TokenKind::kIf:
     return parse_if();
   case TokenKind::kReturn:
@@ -145,12 +145,20 @@ ast::StmtNode Parser::parse_let() {
   return ast::LetStmtNode(var_name, type_name);
 }
 
-ast::StmtNode Parser::parse_assign() {
+ast::StmtNode Parser::parse_assign_or_call() {
   auto var_name = current_token.second;
   next_token();
-  next_token();
-  auto expr = parse_expr();
-  return ast::AssignmentStmtNode(var_name, std::move(expr));
+  if (current_token.second == "=") {
+    next_token();
+    auto expr = parse_expr();
+    return ast::AssignmentStmtNode(var_name, std::move(expr));
+  } else if (current_token.second == "(") {
+    next_token();
+    return ast::AssignmentStmtNode(
+        "_", std::make_unique<ast::CallExprNode>(
+                 var_name, std::move(parse_call_arg_list())));
+  }
+  throw std::logic_error("expected assignment or function call");
 }
 
 ast::StmtNode Parser::parse_if() {
