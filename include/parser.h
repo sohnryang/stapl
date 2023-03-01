@@ -81,7 +81,7 @@ public:
   /**
     Parse an assignment statement.
    */
-  ast::StmtNode parse_assign();
+  ast::StmtNode parse_assign_or_call();
 
   /**
     Parse an ``if`` statement.
