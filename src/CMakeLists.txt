@@ -25,7 +25,7 @@ FetchContent_MakeAvailable(fmt)
 add_library(Lexer lexer.cpp)
 target_include_directories(Lexer PUBLIC "${PROJECT_SOURCE_DIR}/include")
 
-add_library(AST ast.cpp ast_printer.cpp)
+add_library(AST ast.cpp ast_printer.cpp ast_comparator.cpp)
 target_include_directories(AST PUBLIC "${PROJECT_SOURCE_DIR}/include")
 target_link_libraries(AST PUBLIC fmt::fmt)
 
