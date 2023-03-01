@@ -46,7 +46,7 @@ def main(): void
 ## Roadmap
 
 - [ ] Efficient type checking
-- [ ] Support for statements
+- [ ] Support for statements: #1
 - [ ] Standard library
 - [ ] libc interop
 - [ ] More types (arrays, strings, structs, ...)
