@@ -15,7 +15,7 @@ The grammar of stapl language is defined as follows:
    extern_func = "extern" , proto ;
 
    proto = id , "(" , [ param_list ] , ")" , ":" , return_type ;
-   type_name = "int" | "float" ;
+   type_name = "int" | "float" | "bool" ;
    return_type = type_name | "void" ;
    param_list = param , { "," , param } ;
    param = id , ":" , type_name ;
@@ -32,7 +32,8 @@ The grammar of stapl language is defined as follows:
    primary = id | func_call | literal | paren_expr ;
    func_call = id , "(" , [ expr_list ] , ")" ;
    expr_list = expr , { "," , expr } ;
-   literal = int_literal | float_literal ;
+   bool_literal = "true" | "false" ;
+   literal = int_literal | float_literal | bool_literal ;
    binary_operator = "+" | "-" | "*" | "/" | "==" | "!=" | ">" | ">=" | "<" | "<=" ;
    binop_rhs = { binary_operator , primary } ;
 
