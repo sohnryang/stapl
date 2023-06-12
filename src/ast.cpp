@@ -19,23 +19,36 @@ CallExprNode::CallExprNode(const std::string &callee,
                            std::vector<ExprNode> args)
     : callee(callee), args(std::move(args)) {}
 
-IfExprNode::IfExprNode(ExprNode condition, ExprNode then_expr,
-                       ExprNode else_expr)
-    : condition(std::move(condition)), then_expr(std::move(then_expr)),
-      else_expr(std::move(else_expr)) {}
-
 PrototypeNode::PrototypeNode(
     const std::string &name,
     std::vector<std::pair<std::string, std::string>> args,
-    std::string return_type)
-    : name(name), args(std::move(args)), return_type(return_type) {}
+    const std::string &return_type)
+    : name(name), return_type(return_type), args(args) {}
 
-FunctionNode::FunctionNode(PrototypeNode proto, ExprNode func_body)
-    : proto(std::move(proto)), func_body(std::move(func_body)),
-      extern_func(false) {}
+LetStmtNode::LetStmtNode(const std::string &var_name,
+                         const std::string &var_type)
+    : var_name(var_name), var_type(var_type) {}
 
-FunctionNode::FunctionNode(PrototypeNode proto)
-    : proto(std::move(proto)), func_body({}), extern_func(true) {}
+AssignmentStmtNode::AssignmentStmtNode(const std::string &var_name,
+                                       ExprNode assign_expr)
+    : var_name(var_name), assign_expr(std::move(assign_expr)) {}
+
+ReturnStmtNode::ReturnStmtNode(ExprNode return_expr)
+    : return_expr(std::move(return_expr)) {}
+
+IfStmtNode::IfStmtNode(ExprNode condition, StmtNode then_stmt,
+                       StmtNode else_stmt)
+    : condition(std::move(condition)), then_stmt(std::move(then_stmt)),
+      else_stmt(std::move(else_stmt)) {}
+
+CompoundStmtNode::CompoundStmtNode(std::vector<StmtNode> stmts)
+    : stmts(std::move(stmts)) {}
+
+FunctionDeclNode::FunctionDeclNode(PrototypeNode proto, StmtNode func_body)
+    : proto(std::move(proto)), func_body(std::move(func_body)) {}
+
+FunctionDeclNode::FunctionDeclNode(PrototypeNode proto)
+    : proto(std::move(proto)), func_body({}) {}
 
 template class LiteralExprNode<int>;
 template class LiteralExprNode<double>;

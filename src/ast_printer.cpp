@@ -36,13 +36,6 @@ ASTPrinter::operator()(const std::unique_ptr<CallExprNode> &node) const {
   return fmt::format("CallExpr({}, [{}])", node->callee, arg_str);
 }
 
-std::string
-ASTPrinter::operator()(const std::unique_ptr<IfExprNode> &node) const {
-  return fmt::format("If({}, {}, {})", std::visit(*this, node->condition),
-                     std::visit(*this, node->then_expr),
-                     std::visit(*this, node->else_expr));
-}
-
 std::string ASTPrinter::operator()(const PrototypeNode &node) const {
   std::string arg_str;
   for (auto &arg : node.args) {
@@ -54,9 +47,40 @@ std::string ASTPrinter::operator()(const PrototypeNode &node) const {
                      node.return_type);
 }
 
-std::string ASTPrinter::operator()(const FunctionNode &node) const {
-  if (node.extern_func)
-    return fmt::format("ExternFunc({})", (*this)(node.proto));
+std::string ASTPrinter::operator()(const LetStmtNode &node) const {
+  return fmt::format("Let({}, {})", node.var_name, node.var_type);
+}
+
+std::string ASTPrinter::operator()(const AssignmentStmtNode &node) const {
+  return fmt::format("Assign({}, {})", node.var_name,
+                     std::visit(*this, node.assign_expr));
+}
+
+std::string
+ASTPrinter::operator()(const std::unique_ptr<IfStmtNode> &node) const {
+  return fmt::format("If({}, {}, {})", std::visit(*this, node->condition),
+                     std::visit(*this, node->then_stmt),
+                     std::visit(*this, node->else_stmt));
+}
+
+std::string ASTPrinter::operator()(const ReturnStmtNode &node) const {
+  return fmt::format("Return({})", std::visit(*this, node.return_expr));
+}
+
+std::string
+ASTPrinter::operator()(const std::unique_ptr<CompoundStmtNode> &node) const {
+  std::string stmt_str;
+  for (auto &stmt : node->stmts) {
+    if (!stmt_str.empty())
+      stmt_str.append(", ");
+    stmt_str.append(std::visit(*this, stmt));
+  }
+  return fmt::format("Compound([{}])", stmt_str);
+}
+
+std::string ASTPrinter::operator()(const FunctionDeclNode &node) const {
+  if (!node.func_body.has_value())
+    return fmt::format("Func({})", (*this)(node.proto));
   return fmt::format("Func({}, {})", (*this)(node.proto),
                      std::visit(*this, node.func_body.value()));
 }

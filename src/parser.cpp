@@ -41,6 +41,11 @@ ast::LiteralExprNode<double> Parser::parse_float() {
   return node;
 }
 
+ast::ExprNode Parser::parse_expr() {
+  auto lhs = parse_primary();
+  return parse_binop_rhs(0, std::move(lhs));
+}
+
 ast::ExprNode Parser::parse_paren_expr() {
   next_token();
   auto node = parse_expr();
@@ -50,34 +55,10 @@ ast::ExprNode Parser::parse_paren_expr() {
   return node;
 }
 
-ast::ExprNode Parser::parse_identifier() {
-  std::string identifier = current_token.second;
-  next_token();
-  if (current_token.second != "(")
-    return ast::VariableExprNode(identifier);
-
-  next_token();
-  std::vector<ast::ExprNode> args;
-  if (current_token.second != ")") {
-    while (true) {
-      auto arg = parse_expr();
-      args.push_back(std::move(arg));
-
-      if (current_token.second == ")")
-        break;
-      if (current_token.second != ",")
-        throw std::logic_error("expected ) or , in arg list");
-      next_token();
-    }
-  }
-  next_token();
-  return std::make_unique<ast::CallExprNode>(identifier, std::move(args));
-}
-
 ast::ExprNode Parser::parse_primary() {
   switch (current_token.first) {
   case TokenKind::kIdentifier:
-    return parse_identifier();
+    return parse_identifier_or_func_call();
   case TokenKind::kInt:
     return parse_int();
   case TokenKind::kFloat:
@@ -85,8 +66,6 @@ ast::ExprNode Parser::parse_primary() {
   case TokenKind::kMisc:
     if (current_token.second == "(")
       return parse_paren_expr();
-  case TokenKind::kIf:
-    return parse_if();
   default:
     throw std::logic_error("unknown token");
   }
@@ -110,26 +89,105 @@ ast::ExprNode Parser::parse_binop_rhs(int expr_prec, ast::ExprNode lhs) {
   }
 }
 
-ast::ExprNode Parser::parse_if() {
+std::vector<ast::ExprNode> Parser::parse_call_arg_list() {
+  std::vector<ast::ExprNode> args;
+  if (current_token.second != ")") {
+    while (true) {
+      auto arg = parse_expr();
+      args.push_back(std::move(arg));
+
+      if (current_token.second == ")")
+        break;
+      if (current_token.second != ",")
+        throw std::logic_error("expected ) or , in arg list");
+      next_token();
+    }
+  }
+  next_token();
+  return args;
+}
+
+ast::ExprNode Parser::parse_identifier_or_func_call() {
+  std::string identifier = current_token.second;
+  next_token();
+  if (current_token.second != "(")
+    return ast::VariableExprNode(identifier);
+
+  next_token();
+  return std::make_unique<ast::CallExprNode>(identifier,
+                                             std::move(parse_call_arg_list()));
+}
+
+ast::StmtNode Parser::parse_stmt() {
+  switch (current_token.first) {
+  case TokenKind::kLet:
+    return parse_let();
+  case TokenKind::kIdentifier:
+    return parse_assign_or_call();
+  case TokenKind::kIf:
+    return parse_if();
+  case TokenKind::kReturn:
+    return parse_return();
+  case TokenKind::kMisc:
+    return parse_compound();
+  default:
+    throw std::logic_error("unknown token");
+  }
+}
+
+ast::StmtNode Parser::parse_let() {
+  next_token();
+  auto var_name = current_token.second;
+  next_token();
+  next_token();
+  auto type_name = current_token.second;
+  next_token();
+  return ast::LetStmtNode(var_name, type_name);
+}
+
+ast::StmtNode Parser::parse_assign_or_call() {
+  auto var_name = current_token.second;
+  next_token();
+  if (current_token.second == "=") {
+    next_token();
+    auto expr = parse_expr();
+    return ast::AssignmentStmtNode(var_name, std::move(expr));
+  } else if (current_token.second == "(") {
+    next_token();
+    return ast::AssignmentStmtNode(
+        "_", std::make_unique<ast::CallExprNode>(
+                 var_name, std::move(parse_call_arg_list())));
+  }
+  throw std::logic_error("expected assignment or function call");
+}
+
+ast::StmtNode Parser::parse_if() {
   next_token();
   auto condition = parse_expr();
-  if (current_token.first != TokenKind::kThen)
-    throw std::logic_error(
-        fmt::format("expected then, got: {}", current_token.second));
-  next_token();
-  auto then_expr = parse_expr();
+  auto then_stmt = parse_compound();
   if (current_token.first != TokenKind::kElse)
     throw std::logic_error(
         fmt::format("expected else, got: {}", current_token.second));
   next_token();
-  auto else_expr = parse_expr();
-  return std::make_unique<ast::IfExprNode>(
-      std::move(condition), std::move(then_expr), std::move(else_expr));
+  auto else_stmt = parse_compound();
+  return std::make_unique<ast::IfStmtNode>(
+      std::move(condition), std::move(then_stmt), std::move(else_stmt));
 }
 
-ast::ExprNode Parser::parse_expr() {
-  auto lhs = parse_primary();
-  return parse_binop_rhs(0, std::move(lhs));
+ast::StmtNode Parser::parse_return() {
+  next_token();
+  auto expr = parse_expr();
+  return ast::ReturnStmtNode(std::move(expr));
+}
+
+ast::StmtNode Parser::parse_compound() {
+  next_token();
+  std::vector<ast::StmtNode> stmts;
+  while (current_token.second != "}") {
+    stmts.push_back(parse_stmt());
+  }
+  next_token();
+  return std::make_unique<ast::CompoundStmtNode>(std::move(stmts));
 }
 
 ast::PrototypeNode Parser::parse_proto() {
@@ -161,41 +219,31 @@ ast::PrototypeNode Parser::parse_proto() {
   return ast::PrototypeNode(func_name, std::move(arg_names), return_type);
 }
 
-ast::FunctionNode Parser::parse_def() {
+ast::FunctionDeclNode Parser::parse_def() {
   next_token();
   auto proto = parse_proto();
-  auto expr = parse_expr();
-  return ast::FunctionNode(std::move(proto), std::move(expr));
+  auto stmt = parse_compound();
+  return ast::FunctionDeclNode(std::move(proto), std::move(stmt));
 }
 
-ast::FunctionNode Parser::parse_toplevel_expr() {
-  auto expr = parse_expr();
-  auto proto = ast::PrototypeNode(
-      "__anon_expr", std::vector<std::pair<std::string, std::string>>(),
-      "void");
-  return ast::FunctionNode(std::move(proto), std::move(expr));
-}
-
-ast::FunctionNode Parser::parse_extern() {
+ast::FunctionDeclNode Parser::parse_extern() {
   next_token();
   auto proto = parse_proto();
-  auto func = ast::FunctionNode(std::move(proto));
+  auto func = ast::FunctionDeclNode(std::move(proto));
   return func;
 }
 
-std::vector<ast::StatementNode> Parser::parse_all() {
-  std::vector<ast::StatementNode> ast;
+std::vector<ast::DeclNode> Parser::parse_all() {
+  std::vector<ast::DeclNode> decls;
   while (true) {
     if (current_token.first == TokenKind::kEof)
-      return ast;
-    else if (current_token.second == ";")
-      next_token();
+      return decls;
     else if (current_token.first == TokenKind::kDef)
-      ast.push_back(std::move(parse_def()));
+      decls.push_back(std::move(parse_def()));
     else if (current_token.first == TokenKind::kExtern)
-      ast.push_back(std::move(parse_extern()));
+      decls.push_back(std::move(parse_extern()));
     else
-      ast.push_back(std::move(parse_toplevel_expr()));
+      throw std::logic_error("expected declaration");
   }
 }
 } // namespace stapl::parsing

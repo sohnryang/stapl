@@ -71,14 +71,4 @@ Type ExprTypeChecker::operator()(
   }
   return functions.at(node->callee).first;
 }
-
-Type ExprTypeChecker::operator()(
-    const std::unique_ptr<ast::IfExprNode> &node) const {
-  auto condition_type = std::visit(*this, node->condition);
-  if (condition_type != Type::kBool)
-    throw std::logic_error("condition type must be bool");
-  auto then_type = std::visit(*this, node->then_expr),
-       else_type = std::visit(*this, node->else_expr);
-  return binary_op_types.at("if").at({then_type, else_type});
-}
 } // namespace stapl::types

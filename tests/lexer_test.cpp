@@ -14,10 +14,12 @@ TEST(LexerTest, Def) {
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kEof, ""));
 }
 
-TEST(LexerTest, Number) {
-  Lexer lexer("42 3.141592");
+TEST(LexerTest, Literals) {
+  Lexer lexer("42 3.141592 true false");
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kInt, "42"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kFloat, "3.141592"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kBool, "true"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kBool, "false"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kEof, ""));
 }
 
@@ -57,12 +59,25 @@ TEST(LexerTest, Operator) {
 }
 
 TEST(LexerTest, If) {
-  Lexer lexer("if x < 0 then:");
+  Lexer lexer("if x < 0");
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kIf, "if"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kIdentifier, "x"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kOp, "<"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kInt, "0"));
-  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kThen, "then"));
-  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kMisc, ":"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kEof, ""));
+}
+
+TEST(LexerTest, Let) {
+  Lexer lexer("let x: int");
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kLet, "let"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kIdentifier, "x"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kMisc, ":"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kIdentifier, "int"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kEof, ""));
+}
+
+TEST(LexerTest, Return) {
+  Lexer lexer("return 42");
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kReturn, "return"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kInt, "42"));
 }
