@@ -14,10 +14,12 @@ TEST(LexerTest, Def) {
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kEof, ""));
 }
 
-TEST(LexerTest, Number) {
-  Lexer lexer("42 3.141592");
+TEST(LexerTest, Literals) {
+  Lexer lexer("42 3.141592 true false");
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kInt, "42"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kFloat, "3.141592"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kBool, "true"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::kBool, "false"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::kEof, ""));
 }
 
