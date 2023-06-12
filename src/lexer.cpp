@@ -17,7 +17,9 @@ Lexer::Lexer(std::string code)
                    {"if", TokenKind::kIf},
                    {"else", TokenKind::kElse},
                    {"let", TokenKind::kLet},
-                   {"return", TokenKind::kReturn}}) {
+                   {"return", TokenKind::kReturn},
+                   {"true", TokenKind::kBool},
+                   {"false", TokenKind::kBool}}) {
   it = this->code.begin();
 }
 
