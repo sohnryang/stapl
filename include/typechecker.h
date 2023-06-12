@@ -35,6 +35,5 @@ public:
   Type operator()(const ast::VariableExprNode &node) const;
   Type operator()(const std::unique_ptr<ast::BinaryExprNode> &node) const;
   Type operator()(const std::unique_ptr<ast::CallExprNode> &node) const;
-  Type operator()(const std::unique_ptr<ast::IfExprNode> &node) const;
 };
 } // namespace stapl::types
