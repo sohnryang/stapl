@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <lexer.h>
+#include "lexer.h"
 
 #include <sstream>
 #include <string>

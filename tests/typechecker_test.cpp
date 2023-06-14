@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <ast.h>
-#include <typechecker.h>
+#include "ast.h"
+#include "typechecker.h"
 
 #include <map>
 #include <memory>
