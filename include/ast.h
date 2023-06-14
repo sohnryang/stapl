@@ -10,6 +10,17 @@
 
 namespace stapl::ast {
 /**
+  Comparision operator overload for unique pointers of AST nodes.
+ */
+template <typename T>
+inline bool operator==(const std::unique_ptr<T> &p1,
+                       const std::unique_ptr<T> &p2) {
+  if (p1 == nullptr || p2 == nullptr)
+    return p1 == p2;
+  return *p1 == *p2;
+}
+
+/**
   AST node for literal expressions, such as numbers.
  */
 template <typename T> struct LiteralExprNode {
@@ -21,6 +32,7 @@ template <typename T> struct LiteralExprNode {
    */
   LiteralExprNode(T value);
   LiteralExprNode<T> &operator=(LiteralExprNode<T> &&) = default;
+  bool operator==(const LiteralExprNode<T> &rhs) const = default;
 };
 
 /**
@@ -35,6 +47,7 @@ struct VariableExprNode {
    */
   VariableExprNode(const std::string &name);
   VariableExprNode &operator=(VariableExprNode &&) = default;
+  bool operator==(const VariableExprNode &rhs) const = default;
 };
 
 /**
@@ -55,6 +68,7 @@ struct BinaryExprNode {
   BinaryExprNode(BinaryExprNode &&) = default;
   BinaryExprNode(const std::string &op, ExprNode lhs, ExprNode rhs);
   BinaryExprNode &operator=(BinaryExprNode &&) = default;
+  bool operator==(const BinaryExprNode &rhs) const = default;
 };
 
 /**
@@ -67,6 +81,7 @@ struct CallExprNode {
   CallExprNode(CallExprNode &&) = default;
   CallExprNode(const std::string &callee, std::vector<ExprNode> args);
   CallExprNode &operator=(CallExprNode &&) = default;
+  bool operator==(const CallExprNode &rhs) const = default;
 };
 
 /**
@@ -81,6 +96,7 @@ struct PrototypeNode {
                 std::vector<std::pair<std::string, std::string>> args,
                 const std::string &return_type);
   PrototypeNode &operator=(PrototypeNode &&) = default;
+  bool operator==(const PrototypeNode &rhs) const = default;
 };
 
 /**
@@ -92,6 +108,7 @@ struct LetStmtNode {
   LetStmtNode(LetStmtNode &&) = default;
   LetStmtNode(const std::string &var_name, const std::string &var_type);
   LetStmtNode &operator=(LetStmtNode &&) = default;
+  bool operator==(const LetStmtNode &rhs) const = default;
 };
 
 /**
@@ -104,6 +121,7 @@ struct AssignmentStmtNode {
   AssignmentStmtNode(AssignmentStmtNode &&) = default;
   AssignmentStmtNode(const std::string &var_name, ExprNode assign_expr);
   AssignmentStmtNode &operator=(AssignmentStmtNode &&) = default;
+  bool operator==(const AssignmentStmtNode &rhs) const = default;
 };
 
 /**
@@ -114,6 +132,7 @@ struct ReturnStmtNode {
   ReturnStmtNode(ReturnStmtNode &&) = default;
   ReturnStmtNode(ExprNode return_expr);
   ReturnStmtNode &operator=(ReturnStmtNode &&) = default;
+  bool operator==(const ReturnStmtNode &rhs) const = default;
 };
 
 /**
@@ -134,6 +153,7 @@ struct IfStmtNode {
   IfStmtNode(IfStmtNode &&) = default;
   IfStmtNode(ExprNode condition, StmtNode then_stmt, StmtNode else_stmt);
   IfStmtNode &operator=(IfStmtNode &&) = default;
+  bool operator==(const IfStmtNode &rhs) const = default;
 };
 
 /**
@@ -145,6 +165,7 @@ struct CompoundStmtNode {
   CompoundStmtNode(CompoundStmtNode &&) = default;
   CompoundStmtNode(std::vector<StmtNode> stmts);
   CompoundStmtNode &operator=(CompoundStmtNode &&) = default;
+  bool operator==(const CompoundStmtNode &rhs) const = default;
 };
 
 /**
@@ -158,6 +179,7 @@ struct FunctionDeclNode {
   FunctionDeclNode(PrototypeNode proto, StmtNode func_body);
   FunctionDeclNode(PrototypeNode proto);
   FunctionDeclNode &operator=(FunctionDeclNode &&) = default;
+  bool operator==(const FunctionDeclNode &rhs) const = default;
 };
 
 /**
