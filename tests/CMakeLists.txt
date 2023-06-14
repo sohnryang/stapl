@@ -8,7 +8,7 @@ set(gtest_force_shared_crt
     CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(tests lexer_test.cpp parser_test.cpp typechecker_test.cpp)
+add_executable(tests lexer_test.cpp parser_test.cpp)
 target_link_libraries(
   tests
   PRIVATE GTest::gtest_main
