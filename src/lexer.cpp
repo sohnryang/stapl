@@ -12,14 +12,14 @@ Lexer::Lexer(std::string code)
                                                 {'*', {'\0'}},
                                                 {'/', {'\0'}},
                                                 {'%', {'\0'}}}),
-      token_table({{"def", TokenKind::kDef},
-                   {"extern", TokenKind::kExtern},
-                   {"if", TokenKind::kIf},
-                   {"else", TokenKind::kElse},
-                   {"let", TokenKind::kLet},
-                   {"return", TokenKind::kReturn},
-                   {"true", TokenKind::kBool},
-                   {"false", TokenKind::kBool}}) {
+      token_table({{"def", TokenKind::Def},
+                   {"extern", TokenKind::Extern},
+                   {"if", TokenKind::If},
+                   {"else", TokenKind::Else},
+                   {"let", TokenKind::Let},
+                   {"return", TokenKind::Return},
+                   {"true", TokenKind::Bool},
+                   {"false", TokenKind::Bool}}) {
   it = this->code.begin();
 }
 
@@ -30,7 +30,7 @@ Token Lexer::get_token() {
     identifier = last_char;
     while (std::isalnum(last_char = *(it++)) || last_char == '_')
       identifier += last_char;
-    auto kind = TokenKind::kIdentifier;
+    auto kind = TokenKind::Identifier;
     if (token_table.contains(identifier))
       kind = token_table[identifier];
     return {kind, identifier};
@@ -43,8 +43,8 @@ Token Lexer::get_token() {
       last_char = *(it++);
     } while (std::isdigit(last_char) || last_char == '.');
     if (num_str.find('.') != std::string::npos)
-      return {TokenKind::kFloat, num_str};
-    return {TokenKind::kInt, num_str};
+      return {TokenKind::Float, num_str};
+    return {TokenKind::Int, num_str};
   }
 
   if (last_char == '#') {
@@ -56,17 +56,17 @@ Token Lexer::get_token() {
   }
 
   if (last_char == '\0')
-    return {TokenKind::kEof, ""};
+    return {TokenKind::Eof, ""};
 
   int this_char = last_char;
   last_char = *(it++);
   if (!operator_dfa.count(this_char))
-    return {TokenKind::kMisc, std::string(1, this_char)};
+    return {TokenKind::Misc, std::string(1, this_char)};
   op = this_char;
   while (operator_dfa[op.back()].contains(last_char)) {
     op += last_char;
     last_char = *(it++);
   }
-  return {TokenKind::kOp, op};
+  return {TokenKind::Op, op};
 }
 } // namespace stapl::parsing

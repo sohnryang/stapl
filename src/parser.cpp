@@ -57,13 +57,13 @@ ast::ExprNode Parser::parse_paren_expr() {
 
 ast::ExprNode Parser::parse_primary() {
   switch (current_token.first) {
-  case TokenKind::kIdentifier:
+  case TokenKind::Identifier:
     return parse_identifier_or_func_call();
-  case TokenKind::kInt:
+  case TokenKind::Int:
     return parse_int();
-  case TokenKind::kFloat:
+  case TokenKind::Float:
     return parse_float();
-  case TokenKind::kMisc:
+  case TokenKind::Misc:
     if (current_token.second == "(")
       return parse_paren_expr();
   default:
@@ -120,15 +120,15 @@ ast::ExprNode Parser::parse_identifier_or_func_call() {
 
 ast::StmtNode Parser::parse_stmt() {
   switch (current_token.first) {
-  case TokenKind::kLet:
+  case TokenKind::Let:
     return parse_let();
-  case TokenKind::kIdentifier:
+  case TokenKind::Identifier:
     return parse_assign_or_call();
-  case TokenKind::kIf:
+  case TokenKind::If:
     return parse_if();
-  case TokenKind::kReturn:
+  case TokenKind::Return:
     return parse_return();
-  case TokenKind::kMisc:
+  case TokenKind::Misc:
     return parse_compound();
   default:
     throw std::logic_error("unknown token");
@@ -165,7 +165,7 @@ ast::StmtNode Parser::parse_if() {
   next_token();
   auto condition = parse_expr();
   auto then_stmt = parse_compound();
-  if (current_token.first != TokenKind::kElse)
+  if (current_token.first != TokenKind::Else)
     throw std::logic_error(
         fmt::format("expected else, got: {}", current_token.second));
   next_token();
@@ -191,7 +191,7 @@ ast::StmtNode Parser::parse_compound() {
 }
 
 ast::PrototypeNode Parser::parse_proto() {
-  if (current_token.first != TokenKind::kIdentifier)
+  if (current_token.first != TokenKind::Identifier)
     throw std::logic_error("expected function name");
 
   std::string func_name = current_token.second;
@@ -201,7 +201,7 @@ ast::PrototypeNode Parser::parse_proto() {
     throw std::logic_error("expected ( in prototype");
 
   std::vector<std::pair<std::string, std::string>> arg_names;
-  while (next_token().first == TokenKind::kIdentifier) {
+  while (next_token().first == TokenKind::Identifier) {
     auto var_name = current_token.second;
     if (next_token().second != ":")
       throw std::logic_error("expected : after arg name");
@@ -236,11 +236,11 @@ ast::FunctionDeclNode Parser::parse_extern() {
 std::vector<ast::DeclNode> Parser::parse_all() {
   std::vector<ast::DeclNode> decls;
   while (true) {
-    if (current_token.first == TokenKind::kEof)
+    if (current_token.first == TokenKind::Eof)
       return decls;
-    else if (current_token.first == TokenKind::kDef)
+    else if (current_token.first == TokenKind::Def)
       decls.push_back(std::move(parse_def()));
-    else if (current_token.first == TokenKind::kExtern)
+    else if (current_token.first == TokenKind::Extern)
       decls.push_back(std::move(parse_extern()));
     else
       throw std::logic_error("expected declaration");

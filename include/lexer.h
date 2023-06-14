@@ -9,19 +9,19 @@
 
 namespace stapl::parsing {
 enum class TokenKind {
-  kEof,
-  kDef,
-  kExtern,
-  kIf,
-  kElse,
-  kIdentifier,
-  kInt,
-  kFloat,
-  kBool,
-  kLet,
-  kReturn,
-  kOp,
-  kMisc,
+  Eof,
+  Def,
+  Extern,
+  If,
+  Else,
+  Identifier,
+  Int,
+  Float,
+  Bool,
+  Let,
+  Return,
+  Op,
+  Misc,
 };
 typedef std::pair<TokenKind, std::string> Token;
 
