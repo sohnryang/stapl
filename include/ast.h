@@ -1,7 +1,5 @@
 #pragma once
 
-#include "types.h"
-
 #include <map>
 #include <memory>
 #include <optional>
@@ -27,7 +25,7 @@ inline bool operator==(const std::unique_ptr<T> &p1,
  */
 template <typename T> struct LiteralExprNode {
   T value;
-  std::optional<types::TypeKind> expr_type = {};
+  std::optional<std::string> expr_type = {};
 
   LiteralExprNode(LiteralExprNode<T> &&) = default;
   /**
@@ -43,7 +41,7 @@ template <typename T> struct LiteralExprNode {
  */
 struct VariableExprNode {
   std::string name;
-  std::optional<types::TypeKind> expr_type = {};
+  std::optional<std::string> expr_type = {};
 
   VariableExprNode(VariableExprNode &&) = default;
   /**
@@ -68,7 +66,7 @@ using ExprNode =
 struct BinaryExprNode {
   std::string op;
   ExprNode lhs, rhs;
-  std::optional<types::TypeKind> expr_type = {};
+  std::optional<std::string> expr_type = {};
 
   BinaryExprNode(BinaryExprNode &&) = default;
   BinaryExprNode(const std::string &op, ExprNode lhs, ExprNode rhs);
@@ -82,7 +80,7 @@ struct BinaryExprNode {
 struct CallExprNode {
   std::string callee;
   std::vector<ExprNode> args;
-  std::optional<types::TypeKind> expr_type = {};
+  std::optional<std::string> expr_type = {};
 
   CallExprNode(CallExprNode &&) = default;
   CallExprNode(const std::string &callee, std::vector<ExprNode> args);
