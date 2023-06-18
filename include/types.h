@@ -4,13 +4,6 @@
 #include <vector>
 
 namespace stapl::types {
-enum class TypeKind {
-  Int,
-  Float,
-  Bool,
-  Void,
-};
-
 struct FuncTypeInfo {
   std::vector<std::string> arg_types;
   std::string return_type;
