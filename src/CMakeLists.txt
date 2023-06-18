@@ -35,6 +35,6 @@ target_link_libraries(
   PUBLIC Lexer
   PUBLIC AST)
 
-add_library(TypeChecker types.cpp)
+add_library(TypeChecker types.cpp annotator.cpp)
 target_include_directories(TypeChecker PUBLIC "${PROJECT_SOURCE_DIR}/include")
 target_link_libraries(TypeChecker PUBLIC AST)
