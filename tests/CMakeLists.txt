@@ -8,13 +8,14 @@ set(gtest_force_shared_crt
     CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(tests lexer_test.cpp parser_test.cpp)
+add_executable(tests lexer_test.cpp parser_test.cpp annotator_test.cpp)
 target_link_libraries(
   tests
   PRIVATE GTest::gtest_main
   PRIVATE Lexer
   PRIVATE Parser
-  PRIVATE AST)
+  PRIVATE AST
+  PRIVATE TypeChecker)
 target_include_directories(tests PRIVATE "${PROJECT_SOURCE_DIR}/include")
 target_compile_options(
   tests PRIVATE "$<$<C_COMPILER_ID:Clang>:-fsanitize=address,leak>")
