@@ -81,3 +81,30 @@ TEST(TypeCheckerTest, CallExpr) {
   std::visit(a, func_decl);
   EXPECT_EQ(std::visit(a, call_expr), "int");
 }
+
+TEST(TypeCheckerTest, FunctionScope) {
+  std::vector<StmtNode> func_body_f;
+  func_body_f.push_back(LetStmtNode("x", "int"));
+  func_body_f.push_back(LetStmtNode("y", "int"));
+  func_body_f.push_back(AssignmentStmtNode(
+      "x", std::make_unique<BinaryExprNode>("+", VariableExprNode("a"),
+                                            VariableExprNode("b"))));
+  func_body_f.push_back(AssignmentStmtNode(
+      "y", std::make_unique<BinaryExprNode>("+", VariableExprNode("a"),
+                                            VariableExprNode("b"))));
+  func_body_f.push_back(ReturnStmtNode(std::make_unique<BinaryExprNode>(
+      "*", VariableExprNode("x"), VariableExprNode("y"))));
+  DeclNode func_decl_f = FunctionDeclNode(
+      PrototypeNode("f", {{"a", "int"}, {"b", "int"}}, "int"),
+      std::make_unique<CompoundStmtNode>(std::move(func_body_f)));
+
+  std::vector<StmtNode> func_body_g;
+  func_body_g.push_back(ReturnStmtNode(VariableExprNode("x")));
+  DeclNode func_decl_g = FunctionDeclNode(
+      PrototypeNode("g", {}, "int"),
+      std::make_unique<CompoundStmtNode>(std::move(func_body_g)));
+
+  TypeAnnotator a;
+  std::visit(a, func_decl_f);
+  EXPECT_THROW(std::visit(a, func_decl_g), std::logic_error);
+}
