@@ -1,3 +1,4 @@
+#include "annotator.h"
 #include "ast_printer.h"
 #include "irgen.h"
 #include "parser.h"
@@ -19,6 +20,7 @@ namespace po = boost::program_options;
 using stapl::ast::ASTPrinter;
 using stapl::ir::IRGen;
 using stapl::parsing::Parser;
+using stapl::types::TypeAnnotator;
 
 int main(int argc, char *argv[]) {
   po::options_description desc("staplc -- Stapl Compiler");
@@ -57,18 +59,21 @@ int main(int argc, char *argv[]) {
   std::stringstream buf;
   buf << infile.rdbuf();
   auto parser = Parser(buf.str());
-  auto ast = parser.parse_all();
+  auto decls = parser.parse_all();
 
   if (vmap.count("dump-ast")) {
     ASTPrinter printer;
-    for (auto &root : ast)
+    for (auto &root : decls)
       std::cout << std::visit(printer, root) << std::endl;
+  } else if (vmap.count("emit-ir")) {
+    TypeAnnotator annotator;
+    for (auto &decl : decls)
+      std::visit(annotator, decl);
+    IRGen irgen("stapl");
+    irgen.codegen(decls);
+    std::ofstream outfile(vmap["emit-ir"].as<std::string>());
+    irgen.write_ir(outfile);
   }
-  if (!vmap.count("emit-ir"))
-    return 0;
-
-  IRGen irgen;
-  irgen.codegen(vmap["emit-ir"].as<std::string>(), ast);
 
   return 0;
 }

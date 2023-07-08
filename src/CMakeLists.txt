@@ -50,3 +50,13 @@ target_link_libraries(
   PUBLIC AST
   PUBLIC ${llvm_libs}
   PUBLIC fmt::fmt)
+
+add_executable(staplc staplc.cpp)
+target_include_directories(staplc PRIVATE "${PROJECT_SOURCE_DIR}/include")
+target_link_libraries(
+  staplc
+  PRIVATE ${Boost_LIBRARIES}
+  PRIVATE Parser
+  PRIVATE AST
+  PRIVATE TypeChecker
+  PRIVATE IRGen)
