@@ -38,3 +38,15 @@ target_link_libraries(
 add_library(TypeChecker types.cpp annotator.cpp)
 target_include_directories(TypeChecker PUBLIC "${PROJECT_SOURCE_DIR}/include")
 target_link_libraries(TypeChecker PUBLIC AST)
+
+add_library(IRGen irgen.cpp)
+target_include_directories(
+  IRGen
+  PUBLIC "${PROJECT_SOURCE_DIR}/include"
+  PUBLIC "${LLVM_INCLUDE_DIRS}")
+llvm_map_components_to_libnames(llvm_libs core)
+target_link_libraries(
+  IRGen
+  PUBLIC AST
+  PUBLIC ${llvm_libs}
+  PUBLIC fmt::fmt)
