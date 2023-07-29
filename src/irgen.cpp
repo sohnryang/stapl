@@ -1,7 +1,6 @@
 #include "irgen.h"
 #include "ast.h"
 
-#include <cstdint>
 #include <ostream>
 #include <stdexcept>
 #include <string>
@@ -11,7 +10,6 @@
 #include <llvm/ADT/APFloat.h>
 #include <llvm/ADT/APInt.h>
 #include <llvm/IR/BasicBlock.h>
-#include <llvm/IR/Constant.h>
 #include <llvm/IR/Constants.h>
 #include <llvm/IR/Function.h>
 #include <llvm/IR/IRBuilder.h>

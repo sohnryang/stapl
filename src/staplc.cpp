@@ -3,12 +3,8 @@
 #include "irgen.h"
 #include "parser.h"
 
-#include <exception>
 #include <fstream>
-#include <ios>
 #include <iostream>
-#include <map>
-#include <memory>
 #include <sstream>
 #include <string>
 #include <variant>

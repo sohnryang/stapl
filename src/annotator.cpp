@@ -1,8 +1,6 @@
 #include "annotator.h"
 #include "ast.h"
 
-#include <algorithm>
-#include <iterator>
 #include <memory>
 #include <stdexcept>
 #include <string>
