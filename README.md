@@ -30,6 +30,8 @@ The compiled binary is saved to `build/bin/staplc`.
 > Note: syntax is subject to change as stapl is in early stage of development.
 
 ```
+module fibonacci
+
 def fib(n: int): int {
   if n <= 1 {
     return n
