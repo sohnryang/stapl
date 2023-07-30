@@ -168,7 +168,7 @@ ast::StmtNode Parser::parse_if() {
     throw std::logic_error(
         fmt::format("expected else, got: {}", current_token.second));
   next_token();
-  auto else_stmt = parse_compound();
+  auto else_stmt = parse_stmt();
   return std::make_unique<ast::IfStmtNode>(
       std::move(condition), std::move(then_stmt), std::move(else_stmt));
 }
