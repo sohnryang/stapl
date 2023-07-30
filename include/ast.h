@@ -200,5 +200,6 @@ struct Module {
 
   Module(Module &&) = default;
   Module(const std::string &name, std::vector<DeclNode> decls);
+  Module &operator=(Module &&) = default;
 };
 } // namespace stapl::ast
