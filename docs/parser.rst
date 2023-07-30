@@ -34,7 +34,8 @@ The grammar of stapl language is defined as follows:
    expr_list = expr , { "," , expr } ;
    bool_literal = "true" | "false" ;
    literal = int_literal | float_literal | bool_literal ;
-   binary_operator = "+" | "-" | "*" | "/" | "==" | "!=" | ">" | ">=" | "<" | "<=" ;
+   binary_operator = "+" | "-" | "*" | "/" | "%"
+                   | "==" | "!=" | ">" | ">=" | "<" | "<=" ;
    binop_rhs = { binary_operator , primary } ;
 
 
