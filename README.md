@@ -41,8 +41,8 @@ def fib(n: int): int {
 
 ## Roadmap
 
-- [ ] Efficient type checking
-- [ ] Support for statements: #1
+- [x] Efficient type checking
+- [x] Support for statements: #1
 - [ ] Standard library
 - [ ] libc interop
 - [ ] More types (arrays, strings, structs, ...)
