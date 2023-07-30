@@ -8,7 +8,8 @@ The grammar of stapl language is defined as follows:
 
 .. code-block:: ebnf
 
-   module = { item } ;
+   module = module_decl { item } ;
+   module_decl = "module" identifier ;
 
    item = func_def | extern_func ;
    func_def = "def" , proto , compound_stmt ;
