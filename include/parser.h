@@ -10,6 +10,9 @@
 #include <utility>
 #include <vector>
 
+/**
+  Classes and types related to parsing.
+ */
 namespace stapl::parsing {
 /**
   Parser for stapl. This is a combination of [Recursive Descent
@@ -19,10 +22,29 @@ namespace stapl::parsing {
  */
 class Parser {
 private:
+  /**
+    ``Lexer`` object for getting tokens.
+   */
   Lexer lexer;
+
+  /**
+    Currently parsing token.
+   */
   Token current_token;
+
+  /**
+    Get token from lexer and update ``current_token``.
+   */
   Token next_token();
+
+  /**
+    Precedence table for binary operators.
+   */
   std::map<std::string, int> binop_prec;
+
+  /**
+    Get precedence of ``current_token``.
+   */
   int get_prec();
 
 public:
