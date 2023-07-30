@@ -190,4 +190,15 @@ struct FunctionDeclNode {
   Variant for declaration nodes.
  */
 using DeclNode = std::variant<FunctionDeclNode>;
+
+/**
+  Module struct.
+ */
+struct Module {
+  std::string name;
+  std::vector<DeclNode> decls;
+
+  Module(Module &&) = default;
+  Module(const std::string &name, std::vector<DeclNode> decls);
+};
 } // namespace stapl::ast

@@ -2,6 +2,9 @@
 
 #include <cstdint>
 #include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include <fmt/core.h>
 
@@ -49,6 +52,9 @@ FunctionDeclNode::FunctionDeclNode(PrototypeNode proto, StmtNode func_body)
 
 FunctionDeclNode::FunctionDeclNode(PrototypeNode proto)
     : proto(std::move(proto)), func_body({}) {}
+
+Module::Module(const std::string &name, std::vector<DeclNode> decls)
+    : name(name), decls(std::move(decls)) {}
 
 template class LiteralExprNode<int>;
 template class LiteralExprNode<double>;
