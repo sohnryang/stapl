@@ -164,13 +164,16 @@ ast::StmtNode Parser::parse_if() {
   next_token();
   auto condition = parse_expr();
   auto then_stmt = parse_compound();
-  if (current_token.first != TokenKind::Else)
-    throw std::logic_error(
-        fmt::format("expected else, got: {}", current_token.second));
-  next_token();
-  auto else_stmt = parse_stmt();
-  return std::make_unique<ast::IfStmtNode>(
-      std::move(condition), std::move(then_stmt), std::move(else_stmt));
+  if (current_token.first != TokenKind::Else) {
+    return std::make_unique<ast::IfStmtNode>(
+        std::move(condition), std::move(then_stmt),
+        std::make_unique<ast::CompoundStmtNode>(std::vector<ast::StmtNode>()));
+  } else {
+    next_token();
+    auto else_stmt = parse_stmt();
+    return std::make_unique<ast::IfStmtNode>(
+        std::move(condition), std::move(then_stmt), std::move(else_stmt));
+  }
 }
 
 ast::StmtNode Parser::parse_return() {
