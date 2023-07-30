@@ -13,7 +13,7 @@ Prerequisites:
 - C++ compiler with C++20 support
 - CMake 3.19+
 - Boost
-- LLVM
+- LLVM 16+
 
 ```shellsession
 $ mkdir build
