@@ -30,17 +30,13 @@ The compiled binary is saved to `build/src/staplc`.
 > Note: syntax is subject to change as stapl is in early stage of development.
 
 ```
-def fib(n: int): int
-  if n <= 1 then
-    n
-  else
-    fib(n - 1) + fib(n - 2)
-
-extern put_int(x: int): void
-extern scan_int(): int
-
-def main(): void
-  put_int(fib(scan_int()))
+def fib(n: int): int {
+  if n <= 1 {
+    return n
+  } else {
+    return fib(n - 1) + fib(n - 2)
+  }
+}
 ```
 
 ## Roadmap
