@@ -68,6 +68,11 @@ enum class TokenKind {
   Return,
 
   /**
+    Token kind for "module" keyword.
+   */
+  Module,
+
+  /**
     Token kind for operator.
    */
   Op,
