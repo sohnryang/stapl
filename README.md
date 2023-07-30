@@ -23,7 +23,7 @@ $ ninja
 $ ctest
 ```
 
-The compiled binary is saved to `build/src/staplc`.
+The compiled binary is saved to `build/bin/staplc`.
 
 ## Example: fibonacci sequence
 
