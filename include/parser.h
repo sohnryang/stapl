@@ -139,5 +139,10 @@ public:
     Parse all declarations.
    */
   std::vector<ast::DeclNode> parse_all();
+
+  /**
+    Parse a module.
+   */
+  ast::Module parse_module();
 };
 } // namespace stapl::parsing

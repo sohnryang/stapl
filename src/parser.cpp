@@ -1,7 +1,12 @@
 #include "parser.h"
+#include "ast.h"
+#include "lexer.h"
 
 #include <iostream>
+#include <memory>
 #include <stdexcept>
+#include <string>
+#include <utility>
 #include <vector>
 
 #include <fmt/core.h>
@@ -248,5 +253,15 @@ std::vector<ast::DeclNode> Parser::parse_all() {
     else
       throw std::logic_error("expected declaration");
   }
+}
+
+ast::Module Parser::parse_module() {
+  if (current_token.first != TokenKind::Module)
+    throw std::logic_error("expected module");
+  next_token();
+  std::string name = current_token.second;
+  next_token();
+  std::vector<ast::DeclNode> decls = parse_all();
+  return ast::Module(name, std::move(decls));
 }
 } // namespace stapl::parsing
