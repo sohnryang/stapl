@@ -1,5 +1,6 @@
 #include "ast_comparator.h"
 
+#include <cstddef>
 #include <memory>
 
 namespace stapl::ast {

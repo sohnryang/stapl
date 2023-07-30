@@ -1,5 +1,10 @@
 #include "ast.h"
 
+#include <cstdint>
+#include <stdexcept>
+
+#include <fmt/core.h>
+
 namespace stapl::ast {
 template <typename T>
 LiteralExprNode<T>::LiteralExprNode(T value) : value(value) {}

@@ -2,6 +2,7 @@
 
 #include "lexer.h"
 
+#include <sstream>
 #include <string>
 #include <utility>
 
