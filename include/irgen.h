@@ -44,8 +44,9 @@ private:
   llvm::Type *type_from_typename(const std::string &name);
 
 public:
-  IRGen(const std::string &source_filename);
+  IRGen();
   void codegen(std::vector<ast::DeclNode> &decls);
+  void codegen(ast::Module &module_node);
   void write_ir(std::ostream &os);
 
   llvm::Value *operator()(ast::LiteralExprNode<int> &node);

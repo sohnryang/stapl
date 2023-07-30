@@ -59,18 +59,18 @@ int main(int argc, char *argv[]) {
   std::stringstream buf;
   buf << infile.rdbuf();
   auto parser = Parser(buf.str());
-  auto decls = parser.parse_all();
+  auto module = parser.parse_module();
 
   if (vmap.count("dump-ast")) {
     ASTPrinter printer;
-    for (auto &root : decls)
+    for (auto &root : module.decls)
       std::cout << std::visit(printer, root) << std::endl;
   } else if (vmap.count("emit-ir")) {
     TypeAnnotator annotator;
-    for (auto &decl : decls)
+    for (auto &decl : module.decls)
       std::visit(annotator, decl);
-    IRGen irgen("stapl");
-    irgen.codegen(decls);
+    IRGen irgen;
+    irgen.codegen(module);
     std::ofstream outfile(vmap["emit-ir"].as<std::string>());
     irgen.write_ir(outfile);
   }
