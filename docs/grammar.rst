@@ -13,7 +13,9 @@ The grammar of stapl language is defined as follows:
    extern_func = "extern" , proto ;
 
    proto = id , "(" , [ param_list ] , ")" , ":" , return_type ;
-   type_name = "int" | "float" | "bool" ;
+   type_name = "int" | "float" | "bool"
+             | "array" , "[" , type_name , "," , int_literal "]"
+             | "ptr" , "[" , type_name , "]" ;
    return_type = type_name | "void" ;
    param_list = param , { "," , param } ;
    param = id , ":" , type_name ;
@@ -27,8 +29,9 @@ The grammar of stapl language is defined as follows:
    compound_stmt = "{" , { stmt } , "}" ;
 
    expr = primary , binop_rhs | paren_expr ;
-   primary = id | func_call | literal | paren_expr ;
+   primary = id | func_call | literal | paren_expr | array_subscript ;
    func_call = id , "(" , [ expr_list ] , ")" ;
+   array_subscript = primary , "[" , int_literal , "]" ;
    expr_list = expr , { "," , expr } ;
    bool_literal = "true" | "false" ;
    literal = int_literal | float_literal | bool_literal ;
