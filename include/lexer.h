@@ -131,11 +131,13 @@ private:
 public:
   /**
    * @brief Constructor for lexer.
+   * @param code Code string to be lexed.
    */
   Lexer(std::string code);
 
   /**
    * @brief Return a single lexed token.
+   * @return A lexed token.
    */
   std::pair<TokenKind, std::string> get_token();
 };
