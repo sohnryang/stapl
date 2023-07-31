@@ -31,6 +31,11 @@ std::string TypeAnnotator::operator()(ast::LiteralExprNode<double> &node) {
   return "float";
 }
 
+std::string TypeAnnotator::operator()(ast::LiteralExprNode<bool> &node) {
+  node.expr_type = "bool";
+  return "bool";
+}
+
 std::string TypeAnnotator::operator()(ast::VariableExprNode &node) {
   node.expr_type = variable_type_names.at(node.name);
   return node.expr_type.value();

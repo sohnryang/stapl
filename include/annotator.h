@@ -19,6 +19,7 @@ public:
 
   std::string operator()(ast::LiteralExprNode<int> &node);
   std::string operator()(ast::LiteralExprNode<double> &node);
+  std::string operator()(ast::LiteralExprNode<bool> &node);
   std::string operator()(ast::VariableExprNode &node);
   std::string operator()(std::unique_ptr<ast::BinaryExprNode> &node);
   std::string operator()(std::unique_ptr<ast::CallExprNode> &node);
