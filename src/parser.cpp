@@ -46,6 +46,12 @@ ast::LiteralExprNode<double> Parser::parse_float() {
   return node;
 }
 
+ast::LiteralExprNode<bool> Parser::parse_bool() {
+  ast::LiteralExprNode<bool> node(current_token.second == "true");
+  next_token();
+  return node;
+}
+
 ast::ExprNode Parser::parse_expr() {
   auto lhs = parse_primary();
   return parse_binop_rhs(0, std::move(lhs));
@@ -68,6 +74,8 @@ ast::ExprNode Parser::parse_primary() {
     return parse_int();
   case TokenKind::Float:
     return parse_float();
+  case TokenKind::Bool:
+    return parse_bool();
   case TokenKind::Misc:
     if (current_token.second == "(")
       return parse_paren_expr();

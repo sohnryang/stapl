@@ -70,6 +70,12 @@ public:
   ast::LiteralExprNode<double> parse_float();
 
   /**
+   * @brief Parse boolean literals.
+   * @return A parsed boolean literal.
+   */
+  ast::LiteralExprNode<bool> parse_bool();
+
+  /**
    * @brief Parse expression and create an ``ExprNode``.
    * @return A parsed expression.
    */
