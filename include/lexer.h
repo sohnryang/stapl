@@ -139,6 +139,6 @@ public:
    * @brief Return a single lexed token.
    * @return A lexed token.
    */
-  std::pair<TokenKind, std::string> get_token();
+  Token get_token();
 };
 } // namespace stapl::parsing
