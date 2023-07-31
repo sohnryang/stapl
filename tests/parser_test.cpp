@@ -1,5 +1,4 @@
 #include "ast.h"
-#include "ast_comparator.h"
 #include "parser.h"
 
 #include <memory>
@@ -31,8 +30,7 @@ TEST(ParserTest, Prototype) {
   PrototypeNode expected("func", {{"a", "int"}, {"b", "float"}, {"c", "int"}},
                          "int"),
       parsed = parser.parse_proto();
-  ASTComparator cmp;
-  EXPECT_TRUE(cmp(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
 
 TEST(ParserTest, Expr) {
@@ -48,7 +46,7 @@ TEST(ParserTest, Expr) {
                std::make_unique<BinaryExprNode>("*", VariableExprNode("c"),
                                                 VariableExprNode("c"))),
            parsed = parser.parse_expr();
-  EXPECT_TRUE(expr_equals(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
 
 TEST(ParserTest, CallExpr) {
@@ -62,7 +60,7 @@ TEST(ParserTest, CallExpr) {
   args_f.push_back(std::make_unique<CallExprNode>("g", std::move(args_g)));
   ExprNode expected = std::make_unique<CallExprNode>("f", std::move(args_f)),
            parsed = parser.parse_expr();
-  EXPECT_TRUE(expr_equals(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
 
 TEST(ParserTest, ParenExpr) {
@@ -74,13 +72,13 @@ TEST(ParserTest, ParenExpr) {
                std::make_unique<BinaryExprNode>("+", VariableExprNode("a"),
                                                 VariableExprNode("b"))),
            parsed = parser.parse_expr();
-  EXPECT_TRUE(expr_equals(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
 
 TEST(ParserTest, Let) {
   Parser parser("let x: int");
   StmtNode expected(LetStmtNode("x", "int")), parsed = parser.parse_stmt();
-  EXPECT_TRUE(stmt_equals(parsed, expected));
+  EXPECT_EQ(parsed, expected);
 }
 
 TEST(ParserTest, Assign) {
@@ -89,7 +87,7 @@ TEST(ParserTest, Assign) {
       "x", ExprNode(std::make_unique<BinaryExprNode>(
                "+", LiteralExprNode<int>(1), VariableExprNode("y"))))),
       parsed = parser.parse_stmt();
-  EXPECT_TRUE(stmt_equals(parsed, expected));
+  EXPECT_EQ(parsed, expected);
 }
 
 TEST(ParserTest, If) {
@@ -117,7 +115,7 @@ TEST(ParserTest, If) {
       "w", std::make_unique<CallExprNode>("f", std::move(call_args))));
   StmtNode expected(std::make_unique<CompoundStmtNode>(std::move(stmt_vec))),
       parsed = parser.parse_stmt();
-  EXPECT_TRUE(stmt_equals(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
 
 TEST(ParserTest, IfElse) {
@@ -143,7 +141,7 @@ TEST(ParserTest, IfElse) {
       std::make_unique<CompoundStmtNode>(std::move(then_stmt_vec)),
       std::make_unique<CompoundStmtNode>(std::move(else_stmt_vec)))),
       parsed = parser.parse_stmt();
-  EXPECT_TRUE(stmt_equals(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
 
 TEST(ParserTest, IfElseifElse) {
@@ -178,7 +176,7 @@ TEST(ParserTest, IfElseifElse) {
           std::make_unique<CompoundStmtNode>(std::move(else_if_stmt_vec)),
           std::make_unique<CompoundStmtNode>(std::move(else_else_stmt_vec))))),
       parsed = parser.parse_stmt();
-  EXPECT_TRUE(stmt_equals(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
 
 TEST(ParserTest, Return) {
@@ -192,7 +190,7 @@ TEST(ParserTest, Return) {
           LiteralExprNode<int>(10)),
       VariableExprNode("x")))),
       parsed = parser.parse_stmt();
-  EXPECT_TRUE(stmt_equals(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
 
 TEST(ParserTest, Compound) {
@@ -212,7 +210,7 @@ TEST(ParserTest, Compound) {
       "y", std::make_unique<CallExprNode>("f", std::move(call_args))));
   StmtNode expected(std::make_unique<CompoundStmtNode>(std::move(stmts))),
       parsed = parser.parse_stmt();
-  EXPECT_TRUE(stmt_equals(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
 
 TEST(ParserTest, Extern) {
@@ -220,7 +218,7 @@ TEST(ParserTest, Extern) {
   DeclNode expected(FunctionDeclNode(
       PrototypeNode("f", {{"x", "int"}, {"y", "float"}}, "void"))),
       parsed = parser.parse_extern();
-  EXPECT_TRUE(decl_equals(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
 
 TEST(ParserTest, Def) {
@@ -254,5 +252,5 @@ TEST(ParserTest, Def) {
       PrototypeNode("f", {{"x", "int"}, {"y", "float"}}, "void"),
       std::make_unique<CompoundStmtNode>(std::move(stmts)))),
       parsed = parser.parse_def();
-  EXPECT_TRUE(decl_equals(expected, parsed));
+  EXPECT_EQ(expected, parsed);
 }
