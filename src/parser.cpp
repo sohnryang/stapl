@@ -22,6 +22,7 @@ Parser::Parser(std::string code) : lexer(code) {
   binop_prec["-"] = 20;
   binop_prec["*"] = 40;
   binop_prec["/"] = 40;
+  binop_prec["%"] = 40;
   next_token();
 }
 
