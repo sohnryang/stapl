@@ -14,6 +14,21 @@ TEST(LexerTest, Def) {
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Eof, ""));
 }
 
+TEST(LexerTest, ArraySubscript) {
+  Lexer lexer("arr[0][1][2]");
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Identifier, "arr"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "["));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "0"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "]"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "["));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "1"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "]"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "["));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "2"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "]"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Eof, ""));
+}
+
 TEST(LexerTest, Literals) {
   Lexer lexer("42 3.141592 true false");
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "42"));
