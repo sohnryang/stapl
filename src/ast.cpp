@@ -58,4 +58,5 @@ Module::Module(const std::string &name, std::vector<DeclNode> decls)
 
 template class LiteralExprNode<int>;
 template class LiteralExprNode<double>;
+template class LiteralExprNode<bool>;
 } // namespace stapl::ast

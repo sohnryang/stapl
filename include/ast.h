@@ -106,10 +106,10 @@ struct VariableExprNode {
 /**
  * @brief Variant for expression nodes.
  */
-using ExprNode =
-    std::variant<LiteralExprNode<int>, LiteralExprNode<double>,
-                 VariableExprNode, std::unique_ptr<struct BinaryExprNode>,
-                 std::unique_ptr<struct CallExprNode>>;
+using ExprNode = std::variant<LiteralExprNode<int>, LiteralExprNode<double>,
+                              LiteralExprNode<bool>, VariableExprNode,
+                              std::unique_ptr<struct BinaryExprNode>,
+                              std::unique_ptr<struct CallExprNode>>;
 
 /**
  * @brief AST node for binary expressions.
