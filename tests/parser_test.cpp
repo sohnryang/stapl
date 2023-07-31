@@ -42,18 +42,27 @@ TEST(ParserTest, Prototype) {
 }
 
 TEST(ParserTest, Expr) {
-  Parser parser("a*a + b*b - c*c");
-  ExprNode expected = std::make_unique<BinaryExprNode>(
-               "-",
-               std::make_unique<BinaryExprNode>(
-                   "+",
-                   std::make_unique<BinaryExprNode>("*", VariableExprNode("a"),
-                                                    VariableExprNode("a")),
-                   std::make_unique<BinaryExprNode>("*", VariableExprNode("b"),
-                                                    VariableExprNode("b"))),
-               std::make_unique<BinaryExprNode>("*", VariableExprNode("c"),
-                                                VariableExprNode("c"))),
-           parsed = parser.parse_expr();
+  Parser parser("a*a + b*b - c*c + x%m + y/q");
+  ExprNode
+      expected = std::make_unique<BinaryExprNode>(
+          "+",
+          std::make_unique<BinaryExprNode>(
+              "+",
+              std::make_unique<BinaryExprNode>(
+                  "-",
+                  std::make_unique<BinaryExprNode>(
+                      "+",
+                      std::make_unique<BinaryExprNode>(
+                          "*", VariableExprNode("a"), VariableExprNode("a")),
+                      std::make_unique<BinaryExprNode>(
+                          "*", VariableExprNode("b"), VariableExprNode("b"))),
+                  std::make_unique<BinaryExprNode>("*", VariableExprNode("c"),
+                                                   VariableExprNode("c"))),
+              std::make_unique<BinaryExprNode>("%", VariableExprNode("x"),
+                                               VariableExprNode("m"))),
+          std::make_unique<BinaryExprNode>("/", VariableExprNode("y"),
+                                           VariableExprNode("q"))),
+      parsed = parser.parse_expr();
   EXPECT_EQ(expected, parsed);
 }
 
