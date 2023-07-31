@@ -50,7 +50,7 @@ template <typename T> struct LiteralExprNode {
    * @brief Instantiate from literal value.
    * @param value Literal value.
    */
-  LiteralExprNode(T value);
+  explicit LiteralExprNode(T value);
 
   /**
    * @brief Move assignment operator.
@@ -88,7 +88,7 @@ struct VariableExprNode {
    * @brief Instantiate from variable name.
    * @param name Variable name.
    */
-  VariableExprNode(const std::string &name);
+  explicit VariableExprNode(const std::string &name);
 
   /**
    * @brief Move assignment operator.
@@ -146,7 +146,7 @@ struct BinaryExprNode {
    * @param lhs LHS of the binary expression.
    * @param rhs RHS of the binary expression.
    */
-  BinaryExprNode(const std::string &op, ExprNode lhs, ExprNode rhs);
+  explicit BinaryExprNode(const std::string &op, ExprNode lhs, ExprNode rhs);
 
   /**
    * @brief Move assignment operator.
@@ -190,7 +190,7 @@ struct CallExprNode {
    * @param callee Function to call.
    * @param args Arguments of the function call.
    */
-  CallExprNode(const std::string &callee, std::vector<ExprNode> args);
+  explicit CallExprNode(const std::string &callee, std::vector<ExprNode> args);
 
   /**
    * @brief Move assignment operator.
@@ -236,9 +236,9 @@ struct PrototypeNode {
    * @param args Arguments names and types of the function.
    * @param return_type Return type name of the function.
    */
-  PrototypeNode(const std::string &name,
-                std::vector<std::pair<std::string, std::string>> args,
-                const std::string &return_type);
+  explicit PrototypeNode(const std::string &name,
+                         std::vector<std::pair<std::string, std::string>> args,
+                         const std::string &return_type);
 
   /**
    * @brief Move assignment operator.
@@ -277,7 +277,8 @@ struct LetStmtNode {
    * @param var_name Variable name.
    * @param var_type Type name of the variable.
    */
-  LetStmtNode(const std::string &var_name, const std::string &var_type);
+  explicit LetStmtNode(const std::string &var_name,
+                       const std::string &var_type);
 
   /**
    * @brief Move assignment operator.
@@ -316,7 +317,8 @@ struct AssignmentStmtNode {
    * @param var_name Name of the variable to be assigned.
    * @param assign_expr Expression to be assigned.
    */
-  AssignmentStmtNode(const std::string &var_name, ExprNode assign_expr);
+  explicit AssignmentStmtNode(const std::string &var_name,
+                              ExprNode assign_expr);
 
   /**
    * @brief Move assignment operator.
@@ -349,7 +351,7 @@ struct ReturnStmtNode {
    * @brief Instantiate from expression to be returned.
    * @param return_expr Expression to be returned.
    */
-  ReturnStmtNode(ExprNode return_expr);
+  explicit ReturnStmtNode(ExprNode return_expr);
 
   /**
    * @brief Move assignment operator.
@@ -404,7 +406,8 @@ struct IfStmtNode {
    * @param then_stmt Statement to be executed if the condition is true.
    * @param else_stmt Statement to be executed if the condition is false.
    */
-  IfStmtNode(ExprNode condition, StmtNode then_stmt, StmtNode else_stmt);
+  explicit IfStmtNode(ExprNode condition, StmtNode then_stmt,
+                      StmtNode else_stmt);
 
   /**
    * @brief Move assignment operator.
@@ -437,7 +440,7 @@ struct CompoundStmtNode {
    * @brief Instantiate from statements in the compound statement.
    * @param stmts Statements in the compound statement.
    */
-  CompoundStmtNode(std::vector<StmtNode> stmts);
+  explicit CompoundStmtNode(std::vector<StmtNode> stmts);
 
   /**
    * @brief Move assignment operator.
@@ -476,12 +479,12 @@ struct FunctionDeclNode {
    * @param proto Prototype of the function.
    * @param func_body Body of the function.
    */
-  FunctionDeclNode(PrototypeNode proto, StmtNode func_body);
+  explicit FunctionDeclNode(PrototypeNode proto, StmtNode func_body);
 
   /**
    * @brief Constructor for extern functions.
    */
-  FunctionDeclNode(PrototypeNode proto);
+  explicit FunctionDeclNode(PrototypeNode proto);
 
   /**
    * @brief Move assignment operator.
@@ -525,7 +528,7 @@ struct Module {
    * @param name Name of the module.
    * @param decls Declarations in the module.
    */
-  Module(const std::string &name, std::vector<DeclNode> decls);
+  explicit Module(const std::string &name, std::vector<DeclNode> decls);
 
   /**
    * @brief Move assignment operator.
