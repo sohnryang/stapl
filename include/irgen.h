@@ -45,7 +45,6 @@ private:
 
 public:
   IRGen();
-  void codegen(std::vector<ast::DeclNode> &decls);
   void codegen(ast::Module &module_node);
   void write_ir(std::ostream &os);
 

@@ -30,11 +30,6 @@ IRGen::IRGen()
     : context(new llvm::LLVMContext()), module(new llvm::Module("", *context)),
       builder(new llvm::IRBuilder<>(*context)) {}
 
-void IRGen::codegen(std::vector<ast::DeclNode> &decls) {
-  for (auto &decl : decls)
-    std::visit(*this, decl);
-}
-
 void IRGen::codegen(ast::Module &module_node) {
   module->setModuleIdentifier(module_node.name);
   for (auto &decl : module_node.decls)
