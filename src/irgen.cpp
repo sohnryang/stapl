@@ -140,6 +140,10 @@ llvm::Value *IRGen::operator()(ast::LiteralExprNode<double> &node) {
   return llvm::ConstantFP::get(*context, llvm::APFloat(node.value));
 }
 
+llvm::Value *IRGen::operator()(ast::LiteralExprNode<bool> &node) {
+  return llvm::ConstantInt::getBool(*context, node.value);
+}
+
 llvm::Value *IRGen::operator()(ast::VariableExprNode &node) {
   llvm::AllocaInst *alloc = current_scope_symbols.at(node.name);
   return builder->CreateLoad(alloc->getAllocatedType(), alloc);

@@ -51,6 +51,7 @@ public:
 
   llvm::Value *operator()(ast::LiteralExprNode<int> &node);
   llvm::Value *operator()(ast::LiteralExprNode<double> &node);
+  llvm::Value *operator()(ast::LiteralExprNode<bool> &node);
   llvm::Value *operator()(ast::VariableExprNode &node);
   llvm::Value *operator()(std::unique_ptr<ast::BinaryExprNode> &node);
   llvm::Value *operator()(std::unique_ptr<ast::CallExprNode> &node);
