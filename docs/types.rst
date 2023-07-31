@@ -1,0 +1,4 @@
+Types
+=====
+
+.. doxygenfile:: types.h

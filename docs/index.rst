@@ -14,6 +14,7 @@ Welcome to stapl's documentation!
    Lexer <lexer.rst>
    Parser <parser.rst>
    AST <ast.rst>
+   Types <types.rst>
    Type Annotator <annotator.rst>
    IR Generation <irgen.rst>
 
