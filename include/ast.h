@@ -10,7 +10,7 @@
 
 namespace stapl::ast {
 /**
-  Comparision operator overload for unique pointers of AST nodes.
+ * @brief Comparision operator overload for unique pointers of AST nodes.
  */
 template <typename T>
 inline bool operator==(const std::unique_ptr<T> &p1,
@@ -21,7 +21,7 @@ inline bool operator==(const std::unique_ptr<T> &p1,
 }
 
 /**
-  AST node for literal expressions, such as numbers.
+ * @brief AST node for literal expressions, such as numbers.
  */
 template <typename T> struct LiteralExprNode {
   T value;
@@ -29,7 +29,7 @@ template <typename T> struct LiteralExprNode {
 
   LiteralExprNode(LiteralExprNode<T> &&) = default;
   /**
-    Instantiate from literal value.
+   * @brief Instantiate from literal value.
    */
   LiteralExprNode(T value);
   LiteralExprNode<T> &operator=(LiteralExprNode<T> &&) = default;
@@ -37,7 +37,7 @@ template <typename T> struct LiteralExprNode {
 };
 
 /**
-  AST node for variable expressions.
+ * @brief AST node for variable expressions.
  */
 struct VariableExprNode {
   std::string name;
@@ -45,7 +45,7 @@ struct VariableExprNode {
 
   VariableExprNode(VariableExprNode &&) = default;
   /**
-    Instantiate from variable name.
+   * @brief Instantiate from variable name.
    */
   VariableExprNode(const std::string &name);
   VariableExprNode &operator=(VariableExprNode &&) = default;
@@ -53,7 +53,7 @@ struct VariableExprNode {
 };
 
 /**
-  Variant for expression nodes.
+ * @brief Variant for expression nodes.
  */
 using ExprNode =
     std::variant<LiteralExprNode<int>, LiteralExprNode<double>,
@@ -61,7 +61,7 @@ using ExprNode =
                  std::unique_ptr<struct CallExprNode>>;
 
 /**
-  AST node for binary expressions.
+ * @brief AST node for binary expressions.
  */
 struct BinaryExprNode {
   std::string op;
@@ -75,7 +75,7 @@ struct BinaryExprNode {
 };
 
 /**
-  AST node for function call expressions.
+ * @brief AST node for function call expressions.
  */
 struct CallExprNode {
   std::string callee;
@@ -89,7 +89,7 @@ struct CallExprNode {
 };
 
 /**
-  AST node for function prototype.
+ * @brief AST node for function prototype.
  */
 struct PrototypeNode {
   std::string name, return_type;
@@ -104,7 +104,7 @@ struct PrototypeNode {
 };
 
 /**
-  AST node for let statement.
+ * @brief AST node for let statement.
  */
 struct LetStmtNode {
   std::string var_name, var_type;
@@ -116,7 +116,7 @@ struct LetStmtNode {
 };
 
 /**
-  AST node for assignment statement.
+ * @brief AST node for assignment statement.
  */
 struct AssignmentStmtNode {
   std::string var_name;
@@ -129,7 +129,7 @@ struct AssignmentStmtNode {
 };
 
 /**
-  AST node for return statement.
+ * @brief AST node for return statement.
  */
 struct ReturnStmtNode {
   ExprNode return_expr;
@@ -140,7 +140,7 @@ struct ReturnStmtNode {
 };
 
 /**
-  Variant for statement nodes.
+ * @brief Variant for statement nodes.
  */
 using StmtNode =
     std::variant<LetStmtNode, AssignmentStmtNode,
@@ -148,7 +148,7 @@ using StmtNode =
                  std::unique_ptr<struct CompoundStmtNode>>;
 
 /**
-  AST node for if statement.
+ * @brief AST node for if statement.
  */
 struct IfStmtNode {
   ExprNode condition;
@@ -161,7 +161,7 @@ struct IfStmtNode {
 };
 
 /**
-  AST node for compound statement.
+ * @brief AST node for compound statement.
  */
 struct CompoundStmtNode {
   std::vector<StmtNode> stmts;
@@ -173,7 +173,7 @@ struct CompoundStmtNode {
 };
 
 /**
-  AST node for function definition.
+ * @brief AST node for function definition.
  */
 struct FunctionDeclNode {
   PrototypeNode proto;
@@ -187,12 +187,12 @@ struct FunctionDeclNode {
 };
 
 /**
-  Variant for declaration nodes.
+ * @brief Variant for declaration nodes.
  */
 using DeclNode = std::variant<FunctionDeclNode>;
 
 /**
-  Module struct.
+ * @brief Module struct.
  */
 struct Module {
   std::string name;

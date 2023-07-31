@@ -7,7 +7,7 @@
 
 namespace stapl::ast {
 /**
-  A visitor for printing AST nodes.
+ * @brief A visitor for printing AST nodes.
  */
 class ASTPrinter {
 public:

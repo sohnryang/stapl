@@ -11,39 +11,40 @@
 #include <vector>
 
 /**
-  Classes and types related to parsing.
+ * @brief Classes and types related to parsing.
  */
 namespace stapl::parsing {
 /**
-  Parser for stapl. This is a combination of [Recursive Descent
-  Parsing](https://en.wikipedia.org/wiki/Recursive_descent_parser) and
-  [Operator-Precedence
-  Parsing](https://en.wikipedia.org/wiki/Operator-precedence_parser).
+ * @brief Parser for stapl.
+ * This is a combination of [Recursive Descent
+ * Parsing](https://en.wikipedia.org/wiki/Recursive_descent_parser) and
+ * [Operator-Precedence
+ * Parsing](https://en.wikipedia.org/wiki/Operator-precedence_parser).
  */
 class Parser {
 private:
   /**
-    ``Lexer`` object for getting tokens.
+   * @brief ``Lexer`` object for getting tokens.
    */
   Lexer lexer;
 
   /**
-    Currently parsing token.
+   * @brief Currently parsing token.
    */
   Token current_token;
 
   /**
-    Get token from lexer and update ``current_token``.
+   * @brief Get token from lexer and update ``current_token``.
    */
   Token next_token();
 
   /**
-    Precedence table for binary operators.
+   * @brief Precedence table for binary operators.
    */
   std::map<std::string, int> binop_prec;
 
   /**
-    Get precedence of ``current_token``.
+   * @brief Get precedence of ``current_token``.
    */
   int get_prec();
 
@@ -51,97 +52,98 @@ public:
   Parser(std::string code);
 
   /**
-    Parse integer literals.
+   * @brief Parse integer literals.
    */
   ast::LiteralExprNode<int> parse_int();
 
   /**
-    Parse floating-point literals.
+   * @brief Parse floating-point literals.
    */
   ast::LiteralExprNode<double> parse_float();
 
   /**
-    Parse expression and create an ``ExprNode``.
+   * @brief Parse expression and create an ``ExprNode``.
    */
   ast::ExprNode parse_expr();
 
   /**
-    Parse an expression inside a paren.
+   * @brief Parse an expression inside a paren.
    */
   ast::ExprNode parse_paren_expr();
 
   /**
-    Parse primary, which is one of identifier, literal and paren expression.
+   * @brief Parse primary, which is one of identifier, literal and paren
+   * expression.
    */
   ast::ExprNode parse_primary();
 
   /**
-    Parse a binary operator and rhs.
+   * @brief Parse a binary operator and rhs.
    */
   ast::ExprNode parse_binop_rhs(int prec, ast::ExprNode lhs);
 
   /**
-    Parse argument list in function call.
+   * @brief Parse argument list in function call.
    */
   std::vector<ast::ExprNode> parse_call_arg_list();
 
   /**
-    Parse identifier or a function call.
+   * @brief Parse identifier or a function call.
    */
   ast::ExprNode parse_identifier_or_func_call();
 
   /**
-    Parse a statement.
+   * @brief Parse a statement.
    */
   ast::StmtNode parse_stmt();
 
   /**
-    Parse a ``let`` statement.
+   * @brief Parse a ``let`` statement.
    */
   ast::StmtNode parse_let();
 
   /**
-    Parse an assignment statement.
+   * @brief Parse an assignment statement.
    */
   ast::StmtNode parse_assign_or_call();
 
   /**
-    Parse an ``if`` statement.
+   * @brief Parse an ``if`` statement.
    */
   ast::StmtNode parse_if();
 
   /**
-    Parse a ``return`` statement.
+   * @brief Parse a ``return`` statement.
    */
   ast::StmtNode parse_return();
 
   /**
-    Parse a compound statement.
+   * @brief Parse a compound statement.
    */
   ast::StmtNode parse_compound();
 
   /**
-    Parse a function prototype.
+   * @brief Parse a function prototype.
    */
   ast::PrototypeNode parse_proto();
 
   /**
-    Parse a ``def`` statement.
+   * @brief Parse a ``def`` statement.
    */
   ast::FunctionDeclNode parse_def();
 
   /**
-    Parse an extern function.
+   * @brief Parse an extern function.
    */
   ast::FunctionDeclNode parse_extern();
 
   /**
-    Parse all declarations.
+   * @brief Parse all declarations.
    */
   std::vector<ast::DeclNode> parse_all();
 
   /**
-    Parse a module.
+   * @brief Parse a module.
    */
   ast::Module parse_module();
 };
