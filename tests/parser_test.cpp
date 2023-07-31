@@ -25,6 +25,14 @@ TEST(ParserTest, Float) {
   EXPECT_EQ(node.value, std::stod(num));
 }
 
+TEST(ParserTest, Bool) {
+  Parser parser("true false");
+  auto node = parser.parse_bool();
+  EXPECT_TRUE(node.value);
+  node = parser.parse_bool();
+  EXPECT_FALSE(node.value);
+}
+
 TEST(ParserTest, Prototype) {
   Parser parser("func(a: int, b: float, c: int): int");
   PrototypeNode expected("func", {{"a", "int"}, {"b", "float"}, {"c", "int"}},
