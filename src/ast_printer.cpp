@@ -13,6 +13,10 @@ std::string ASTPrinter::operator()(const LiteralExprNode<double> &node) const {
   return fmt::format("Literal({}, float)", node.value);
 }
 
+std::string ASTPrinter::operator()(const LiteralExprNode<bool> &node) const {
+  return fmt::format("Literal({}, bool)", node.value);
+}
+
 std::string ASTPrinter::operator()(const VariableExprNode &node) const {
   return fmt::format("Variable({})", node.name);
 }
