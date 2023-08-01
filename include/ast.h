@@ -205,6 +205,123 @@ struct CallExprNode {
   bool operator==(const CallExprNode &rhs) const = default;
 };
 
+struct TaggedTypeNode;
+
+/**
+ * @brief AST node for basic types.
+ */
+struct BasicTypeNode {
+  /**
+   * @brief Name of the type.
+   */
+  std::string name;
+
+  /**
+   * @brief Move constructor.
+   */
+  BasicTypeNode(BasicTypeNode &&) = default;
+
+  /**
+   * @brief Instantiate from name of the type.
+   * @param name Name of the type.
+   */
+  explicit BasicTypeNode(const std::string &name);
+
+  /**
+   * @brief Move assignment operator.
+   */
+  BasicTypeNode &operator=(BasicTypeNode &&) = default;
+
+  /**
+   * @brief Comparision operator overload.
+   * @param rhs ``BasicTypeNode`` on the RHS.
+   * @return Whether the objects referenced by ``this`` and ``rhs`` are equal.
+   */
+  bool operator==(const BasicTypeNode &rhs) const = default;
+};
+
+/**
+ * @brief AST node for types.
+ */
+using TypeNode = std::variant<std::unique_ptr<TaggedTypeNode>, BasicTypeNode>;
+
+/**
+ * @brief AST node for type tag.
+ */
+template <typename T> struct LiteralTypeTag {
+  /**
+   * @brief Literal value.
+   */
+  T literal;
+
+  /**
+   * @brief Move constructor.
+   */
+  LiteralTypeTag(LiteralTypeTag &&) = default;
+
+  /**
+   * @brief Instantiate from literal value.
+   * @param literal Literal value.
+   */
+  explicit LiteralTypeTag(const T &literal);
+
+  /**
+   * @brief Move assignment operator.
+   */
+  LiteralTypeTag &operator=(LiteralTypeTag &&) = default;
+
+  /**
+   * @brief Comparision operator overload.
+   * @param rhs ``LiteralTypeTag<T>`` on the RHS.
+   * @return Whether the objects referenced by ``this`` and ``rhs`` are equal.
+   */
+  bool operator==(const LiteralTypeTag &rhs) const = default;
+};
+
+/**
+ * @brief Variant for type tags.
+ */
+using TypeTag = std::variant<TypeNode, LiteralTypeTag<int>>;
+
+/**
+ * @brief AST node for tagged types.
+ */
+struct TaggedTypeNode {
+  /**
+   * @brief Tags of the type.
+   */
+  std::vector<TypeTag> tags;
+
+  /**
+   * @brief Name of the type.
+   */
+  std::string name;
+
+  /**
+   * @brief Move constructor.
+   */
+  TaggedTypeNode(TaggedTypeNode &&) = default;
+
+  /**
+   * @brief Instantiate from name and tags.
+   * @param name Name of the type.
+   * @param tags Tags of the type.
+   */
+  explicit TaggedTypeNode(const std::string &name, std::vector<TypeTag> tags);
+
+  /**
+   * @brief Move assignment operator.
+   */
+  TaggedTypeNode &operator=(TaggedTypeNode &&) = default;
+
+  /**
+   * @brief Comparision operator overload.
+   * @param rhs ``TaggedTypeNode`` on the RHS.
+   * @return Whether the objects referenced by ``this`` and ``rhs`` are equal.
+   */
+  bool operator==(const TaggedTypeNode &rhs) const = default;
+};
+
 /**
  * @brief AST node for function prototype.
  */

@@ -56,7 +56,18 @@ FunctionDeclNode::FunctionDeclNode(PrototypeNode proto)
 Module::Module(const std::string &name, std::vector<DeclNode> decls)
     : name(name), decls(std::move(decls)) {}
 
+BasicTypeNode::BasicTypeNode(const std::string &name) : name(name) {}
+
+template <typename T>
+LiteralTypeTag<T>::LiteralTypeTag(const T &literal) : literal(literal) {}
+
+TaggedTypeNode::TaggedTypeNode(const std::string &name,
+                               std::vector<TypeTag> tags)
+    : name(name), tags(std::move(tags)) {}
+
 template class LiteralExprNode<int>;
 template class LiteralExprNode<double>;
 template class LiteralExprNode<bool>;
+
+template class LiteralTypeTag<int>;
 } // namespace stapl::ast
