@@ -334,12 +334,12 @@ struct PrototypeNode {
   /**
    * @brief Return type name of the function.
    */
-  std::string return_type;
+  TypeNode return_type;
 
   /**
    * @brief Arguments names and types of the function.
    */
-  std::vector<std::pair<std::string, std::string>> args;
+  std::vector<std::pair<std::string, TypeNode>> args;
 
   /**
    * @brief Move constructor.
@@ -354,8 +354,8 @@ struct PrototypeNode {
    * @param return_type Return type name of the function.
    */
   explicit PrototypeNode(const std::string &name,
-                         std::vector<std::pair<std::string, std::string>> args,
-                         const std::string &return_type);
+                         std::vector<std::pair<std::string, TypeNode>> args,
+                         TypeNode return_type);
 
   /**
    * @brief Move assignment operator.
@@ -382,7 +382,7 @@ struct LetStmtNode {
   /**
    * @brief Type name of the variable.
    */
-  std::string var_type;
+  TypeNode var_type;
 
   /**
    * @brief Move constructor.
@@ -394,8 +394,7 @@ struct LetStmtNode {
    * @param var_name Variable name.
    * @param var_type Type name of the variable.
    */
-  explicit LetStmtNode(const std::string &var_name,
-                       const std::string &var_type);
+  explicit LetStmtNode(const std::string &var_name, TypeNode var_type);
 
   /**
    * @brief Move assignment operator.

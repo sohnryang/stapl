@@ -22,15 +22,13 @@ CallExprNode::CallExprNode(const std::string &callee,
                            std::vector<ExprNode> args)
     : callee(callee), args(std::move(args)) {}
 
-PrototypeNode::PrototypeNode(
-    const std::string &name,
-    std::vector<std::pair<std::string, std::string>> args,
-    const std::string &return_type)
-    : name(name), return_type(return_type), args(args) {}
+PrototypeNode::PrototypeNode(const std::string &name,
+                             std::vector<std::pair<std::string, TypeNode>> args,
+                             TypeNode return_type)
+    : name(name), return_type(std::move(return_type)), args(std::move(args)) {}
 
-LetStmtNode::LetStmtNode(const std::string &var_name,
-                         const std::string &var_type)
-    : var_name(var_name), var_type(var_type) {}
+LetStmtNode::LetStmtNode(const std::string &var_name, TypeNode var_type)
+    : var_name(var_name), var_type(std::move(var_type)) {}
 
 AssignmentStmtNode::AssignmentStmtNode(const std::string &var_name,
                                        ExprNode assign_expr)
