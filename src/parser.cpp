@@ -187,9 +187,8 @@ ast::StmtNode Parser::parse_let() {
   auto var_name = current_token.second;
   next_token();
   next_token();
-  auto type_name = current_token.second;
-  next_token();
-  return ast::LetStmtNode(var_name, type_name);
+  auto type_node = parse_type();
+  return ast::LetStmtNode(var_name, std::move(type_node));
 }
 
 ast::StmtNode Parser::parse_assign_or_call() {
@@ -250,23 +249,24 @@ ast::PrototypeNode Parser::parse_proto() {
   if (current_token.second != "(")
     throw std::logic_error("expected ( in prototype");
 
-  std::vector<std::pair<std::string, std::string>> arg_names;
+  std::vector<std::pair<std::string, ast::TypeNode>> args;
   while (next_token().first == TokenKind::Identifier) {
     auto var_name = current_token.second;
     if (next_token().second != ":")
       throw std::logic_error("expected : after arg name");
-    auto type_name = next_token().second;
-    arg_names.push_back({var_name, type_name});
-    if (next_token().second != ",")
+    next_token();
+    auto arg_type_node = parse_type();
+    args.push_back({var_name, std::move(arg_type_node)});
+    if (current_token.second != ",")
       break;
   }
   if (current_token.second != ")")
     throw std::logic_error("expected ) in prototype");
   if (next_token().second != ":")
     throw std::logic_error("expected : after args");
-  auto return_type = next_token().second;
   next_token();
-  return ast::PrototypeNode(func_name, std::move(arg_names), return_type);
+  auto return_type = parse_type();
+  return ast::PrototypeNode(func_name, std::move(args), std::move(return_type));
 }
 
 ast::FunctionDeclNode Parser::parse_def() {
