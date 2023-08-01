@@ -92,6 +92,39 @@ TEST(ParserTest, ParenExpr) {
   EXPECT_EQ(expected, parsed);
 }
 
+TEST(ParserTest, BasicType) {
+  Parser parser("int");
+  TypeNode expected = BasicTypeNode("int"), parsed = parser.parse_type();
+  EXPECT_EQ(expected, parsed);
+}
+
+TEST(ParserTest, TaggedType) {
+  Parser parser("array[int, 42]");
+  std::vector<TypeTag> tag_vec;
+  tag_vec.push_back(BasicTypeNode("int"));
+  tag_vec.push_back(LiteralTypeTag<int>(42));
+  TypeNode expected =
+               std::make_unique<TaggedTypeNode>("array", std::move(tag_vec)),
+           parsed = parser.parse_type();
+  EXPECT_EQ(expected, parsed);
+}
+
+TEST(ParserTest, TaggedTypeNested) {
+  Parser parser("array[ptr[array[int, 4]], 8]");
+  std::vector<TypeTag> ptr_arr_tag_vec, ptr_tag_vec, int_arr_tag_vec;
+  int_arr_tag_vec.push_back(BasicTypeNode("int"));
+  int_arr_tag_vec.push_back(LiteralTypeTag<int>(4));
+  ptr_tag_vec.push_back(
+      std::make_unique<TaggedTypeNode>("array", std::move(int_arr_tag_vec)));
+  ptr_arr_tag_vec.push_back(
+      std::make_unique<TaggedTypeNode>("ptr", std::move(ptr_tag_vec)));
+  ptr_arr_tag_vec.push_back(LiteralTypeTag<int>(8));
+  TypeNode expected = std::make_unique<TaggedTypeNode>(
+               "array", std::move(ptr_arr_tag_vec)),
+           parsed = parser.parse_type();
+  EXPECT_EQ(expected, parsed);
+}
+
 TEST(ParserTest, Let) {
   Parser parser("let x: int");
   StmtNode expected(LetStmtNode("x", "int")), parsed = parser.parse_stmt();
