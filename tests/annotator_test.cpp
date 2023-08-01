@@ -8,9 +8,11 @@
 
 #include "annotator.h"
 #include "ast.h"
+#include "util.h"
 
 using namespace stapl::ast;
 using namespace stapl::types;
+using namespace stapl::util;
 
 TEST(TypeCheckerTest, Literals) {
   ExprNode literal_int = LiteralExprNode<int>(42),
@@ -36,10 +38,9 @@ TEST(TypeCheckerTest, Variables) {
 }
 
 TEST(TypeCheckerTest, BinaryExpr) {
-  std::vector<StmtNode> let_stmts;
-  let_stmts.push_back(LetStmtNode("x", "int"));
-  let_stmts.push_back(LetStmtNode("y", "int"));
-  let_stmts.push_back(LetStmtNode("z", "int"));
+  auto let_stmts =
+      make_vector<StmtNode>(LetStmtNode("x", "int"), LetStmtNode("y", "int"),
+                            LetStmtNode("z", "int"));
   StmtNode block_stmt =
       std::make_unique<CompoundStmtNode>(std::move(let_stmts));
   ExprNode expr = std::make_unique<BinaryExprNode>(
@@ -64,18 +65,17 @@ TEST(TypeCheckerTest, BinaryExpr) {
 }
 
 TEST(TypeCheckerTest, CallExpr) {
-  std::vector<StmtNode> func_body;
-  func_body.push_back(ReturnStmtNode(std::make_unique<BinaryExprNode>(
-      "+", VariableExprNode("x"),
-      std::make_unique<BinaryExprNode>("+", VariableExprNode("y"),
-                                       VariableExprNode("z")))));
+  auto func_body =
+      make_vector<StmtNode>(ReturnStmtNode(std::make_unique<BinaryExprNode>(
+          "+", VariableExprNode("x"),
+          std::make_unique<BinaryExprNode>("+", VariableExprNode("y"),
+                                           VariableExprNode("z")))));
   DeclNode func_decl = FunctionDeclNode(
       PrototypeNode("add", {{"x", "int"}, {"y", "int"}, {"z", "int"}}, "int"),
       std::make_unique<CompoundStmtNode>(std::move(func_body)));
-  std::vector<ExprNode> args;
-  args.push_back(LiteralExprNode<int>(1));
-  args.push_back(LiteralExprNode<int>(2));
-  args.push_back(LiteralExprNode<int>(3));
+  std::vector<ExprNode> args =
+      make_vector<ExprNode>(LiteralExprNode<int>(1), LiteralExprNode<int>(2),
+                            LiteralExprNode<int>(3));
   ExprNode call_expr = std::make_unique<CallExprNode>("add", std::move(args));
   TypeAnnotator a;
   std::visit(a, func_decl);
@@ -83,23 +83,22 @@ TEST(TypeCheckerTest, CallExpr) {
 }
 
 TEST(TypeCheckerTest, FunctionScope) {
-  std::vector<StmtNode> func_body_f;
-  func_body_f.push_back(LetStmtNode("x", "int"));
-  func_body_f.push_back(LetStmtNode("y", "int"));
-  func_body_f.push_back(AssignmentStmtNode(
-      "x", std::make_unique<BinaryExprNode>("+", VariableExprNode("a"),
-                                            VariableExprNode("b"))));
-  func_body_f.push_back(AssignmentStmtNode(
-      "y", std::make_unique<BinaryExprNode>("+", VariableExprNode("a"),
-                                            VariableExprNode("b"))));
-  func_body_f.push_back(ReturnStmtNode(std::make_unique<BinaryExprNode>(
-      "*", VariableExprNode("x"), VariableExprNode("y"))));
+  auto func_body_f = make_vector<StmtNode>(
+      LetStmtNode("x", "int"), LetStmtNode("y", "int"),
+      AssignmentStmtNode(
+          "x", std::make_unique<BinaryExprNode>("+", VariableExprNode("a"),
+                                                VariableExprNode("b"))),
+      AssignmentStmtNode(
+          "y", std::make_unique<BinaryExprNode>("+", VariableExprNode("a"),
+                                                VariableExprNode("b"))),
+      ReturnStmtNode(std::make_unique<BinaryExprNode>(
+          "*", VariableExprNode("x"), VariableExprNode("y"))));
   DeclNode func_decl_f = FunctionDeclNode(
       PrototypeNode("f", {{"a", "int"}, {"b", "int"}}, "int"),
       std::make_unique<CompoundStmtNode>(std::move(func_body_f)));
 
-  std::vector<StmtNode> func_body_g;
-  func_body_g.push_back(ReturnStmtNode(VariableExprNode("x")));
+  auto func_body_g =
+      make_vector<StmtNode>(ReturnStmtNode(VariableExprNode("x")));
   DeclNode func_decl_g = FunctionDeclNode(
       PrototypeNode("g", {}, "int"),
       std::make_unique<CompoundStmtNode>(std::move(func_body_g)));
