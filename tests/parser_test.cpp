@@ -37,8 +37,11 @@ TEST(ParserTest, Bool) {
 
 TEST(ParserTest, Prototype) {
   Parser parser("func(a: int, b: float, c: int): int");
-  PrototypeNode expected("func", {{"a", "int"}, {"b", "float"}, {"c", "int"}},
-                         "int"),
+  std::vector<std::pair<std::string, TypeNode>> arg_vec;
+  arg_vec.push_back({"a", BasicTypeNode("int")});
+  arg_vec.push_back({"b", BasicTypeNode("float")});
+  arg_vec.push_back({"c", BasicTypeNode("int")});
+  PrototypeNode expected("func", std::move(arg_vec), BasicTypeNode("int")),
       parsed = parser.parse_proto();
   EXPECT_EQ(expected, parsed);
 }
@@ -128,7 +131,8 @@ TEST(ParserTest, TaggedTypeNested) {
 
 TEST(ParserTest, Let) {
   Parser parser("let x: int");
-  StmtNode expected(LetStmtNode("x", "int")), parsed = parser.parse_stmt();
+  StmtNode expected(LetStmtNode("x", BasicTypeNode("int"))),
+      parsed = parser.parse_stmt();
   EXPECT_EQ(parsed, expected);
 }
 
@@ -155,10 +159,10 @@ TEST(ParserTest, If) {
           std::make_unique<BinaryExprNode>("==", VariableExprNode("x"),
                                            VariableExprNode("y")),
           std::make_unique<CompoundStmtNode>(make_vector<StmtNode>(
-              LetStmtNode("z", "int"),
+              LetStmtNode("z", BasicTypeNode("int")),
               AssignmentStmtNode("z", LiteralExprNode<int>(42)))),
           std::make_unique<CompoundStmtNode>(std::vector<StmtNode>())),
-      LetStmtNode("w", "float"),
+      LetStmtNode("w", BasicTypeNode("float")),
       AssignmentStmtNode(
           "w", std::make_unique<CallExprNode>(
                    "f", make_vector<ExprNode>(VariableExprNode("x"),
@@ -178,10 +182,10 @@ TEST(ParserTest, IfElse) {
   auto call_args =
       make_vector<ExprNode>(VariableExprNode("x"), VariableExprNode("y"));
   auto then_stmt_vec = make_vector<StmtNode>(
-           LetStmtNode("z", "int"),
+           LetStmtNode("z", BasicTypeNode("int")),
            AssignmentStmtNode("z", LiteralExprNode<int>(42))),
        else_stmt_vec = make_vector<StmtNode>(
-           LetStmtNode("w", "float"),
+           LetStmtNode("w", BasicTypeNode("float")),
            AssignmentStmtNode(
                "w", std::make_unique<CallExprNode>("f", std::move(call_args))));
   StmtNode expected(std::make_unique<IfStmtNode>(
@@ -206,10 +210,10 @@ TEST(ParserTest, IfElseifElse) {
   auto call_args =
       make_vector<ExprNode>(VariableExprNode("x"), VariableExprNode("y"));
   auto then_stmt_vec = make_vector<StmtNode>(
-           LetStmtNode("z", "int"),
+           LetStmtNode("z", BasicTypeNode("int")),
            AssignmentStmtNode("z", LiteralExprNode<int>(42))),
        else_if_stmt_vec = make_vector<StmtNode>(
-           LetStmtNode("w", "float"),
+           LetStmtNode("w", BasicTypeNode("float")),
            AssignmentStmtNode(
                "w", std::make_unique<CallExprNode>("f", std::move(call_args)))),
        else_else_stmt_vec = make_vector<StmtNode>(
@@ -249,9 +253,9 @@ TEST(ParserTest, Compound) {
   y = f(x)
 })");
   auto stmts = make_vector<StmtNode>(
-      LetStmtNode("x", "int"),
+      LetStmtNode("x", BasicTypeNode("int")),
       AssignmentStmtNode("x", LiteralExprNode<int>(42)),
-      LetStmtNode("y", "float"),
+      LetStmtNode("y", BasicTypeNode("float")),
       AssignmentStmtNode(
           "y", std::make_unique<CallExprNode>(
                    "f", make_vector<ExprNode>(VariableExprNode("x")))));
@@ -262,9 +266,12 @@ TEST(ParserTest, Compound) {
 
 TEST(ParserTest, Extern) {
   Parser parser("extern f(x: int, y: float): void");
-  DeclNode expected(FunctionDeclNode(
-      PrototypeNode("f", {{"x", "int"}, {"y", "float"}}, "void"))),
-      parsed = parser.parse_extern();
+  std::vector<std::pair<std::string, TypeNode>> args;
+  args.push_back({"x", BasicTypeNode("int")});
+  args.push_back({"y", BasicTypeNode("float")});
+  DeclNode expected = FunctionDeclNode(
+               PrototypeNode("f", std::move(args), BasicTypeNode("void"))),
+           parsed = parser.parse_extern();
   EXPECT_EQ(expected, parsed);
 }
 
@@ -285,7 +292,7 @@ TEST(ParserTest, Def) {
            "_", std::make_unique<CallExprNode>(
                     "h", make_vector<ExprNode>(VariableExprNode("z"))))),
        stmts = make_vector<StmtNode>(
-           LetStmtNode("z", "int"),
+           LetStmtNode("z", BasicTypeNode("int")),
            AssignmentStmtNode(
                "z", std::make_unique<CallExprNode>(
                         "g", make_vector<ExprNode>(VariableExprNode("y")))),
@@ -294,8 +301,11 @@ TEST(ParserTest, Def) {
                                                 VariableExprNode("z")),
                std::make_unique<CompoundStmtNode>(std::move(then_stmts)),
                std::make_unique<CompoundStmtNode>(std::move(else_stmts))));
+  std::vector<std::pair<std::string, TypeNode>> args;
+  args.push_back({"x", BasicTypeNode("int")});
+  args.push_back({"y", BasicTypeNode("float")});
   DeclNode expected(FunctionDeclNode(
-      PrototypeNode("f", {{"x", "int"}, {"y", "float"}}, "void"),
+      PrototypeNode("f", std::move(args), BasicTypeNode("void")),
       std::make_unique<CompoundStmtNode>(std::move(stmts)))),
       parsed = parser.parse_def();
   EXPECT_EQ(expected, parsed);
