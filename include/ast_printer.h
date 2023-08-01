@@ -54,6 +54,34 @@ public:
   std::string operator()(const std::unique_ptr<CallExprNode> &node) const;
 
   /**
+   * @brief Represent BasicTypeNode as string.
+   * @param node The node to represent.
+   * @return The string representation of the node.
+   */
+  std::string operator()(const BasicTypeNode &node) const;
+
+  /**
+   * @brief Represent TaggedTypeNode as string.
+   * @param node The node to represent.
+   * @return The string representation of the node.
+   */
+  std::string operator()(const std::unique_ptr<TaggedTypeNode> &node) const;
+
+  /**
+   * @brief Represent TypeNode as string.
+   * @param node The node to represent.
+   * @return The string representation of the node.
+   */
+  std::string operator()(const TypeNode &node) const;
+
+  /**
+   * @brief Represent LiteralTypeTag<int> as string.
+   * @param node The node to represent.
+   * @return The string representation of the node.
+   */
+  std::string operator()(const LiteralTypeTag<int> &node) const;
+
+  /**
    * @brief Represent PrototypeNode as string.
    * @param node The node to represent.
    * @return The string representation of the node.
