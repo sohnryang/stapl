@@ -116,6 +116,18 @@ public:
   ast::ExprNode parse_identifier_or_func_call();
 
   /**
+   * @brief Parse a type tag list.
+   * @return A parsed type tag list.
+   */
+  std::vector<ast::TypeTag> parse_type_tag_list();
+
+  /**
+   * @brief Parse a type.
+   * @return A parsed type.
+   */
+  ast::TypeNode parse_type();
+
+  /**
    * @brief Parse a statement.
    * @return A parsed statement.
    */

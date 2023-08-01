@@ -132,6 +132,39 @@ ast::ExprNode Parser::parse_identifier_or_func_call() {
                                              std::move(parse_call_arg_list()));
 }
 
+std::vector<ast::TypeTag> Parser::parse_type_tag_list() {
+  std::vector<ast::TypeTag> tags;
+  if (current_token.second != "]") {
+    while (true) {
+      if (current_token.first == TokenKind::Int) {
+        tags.push_back(
+            ast::LiteralTypeTag<int>(std::stoi(current_token.second)));
+        next_token();
+      } else
+        tags.push_back(parse_type());
+
+      if (current_token.second == "]")
+        break;
+      if (current_token.second != ",")
+        throw std::logic_error("expected ] or , in tag list");
+      next_token();
+    }
+  }
+  next_token();
+  return tags;
+}
+
+ast::TypeNode Parser::parse_type() {
+  auto type_name = current_token.second;
+  next_token();
+  if (current_token.second != "[")
+    return ast::BasicTypeNode(type_name);
+
+  next_token();
+  return std::make_unique<ast::TaggedTypeNode>(
+      type_name, std::move(parse_type_tag_list()));
+}
+
 ast::StmtNode Parser::parse_stmt() {
   switch (current_token.first) {
   case TokenKind::Let:
