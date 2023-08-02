@@ -38,6 +38,21 @@ enum class TokenKind {
   Else,
 
   /**
+   * @brief Token kind for "while" keyword.
+   */
+  While,
+
+  /**
+   * @brief Token kind for "break" keyword.
+   */
+  Break,
+
+  /**
+   * @brief Token kind for "continue" keyword.
+   */
+  Continue,
+
+  /**
    * @brief Token kind for identifier.
    */
   Identifier,
