@@ -192,7 +192,7 @@ llvm::Value *IRGen::operator()(std::unique_ptr<ast::BinaryExprNode> &node) {
     return binary_op_le(lhs_val, rhs_val);
   else if (node->op == ">=")
     return binary_op_ge(lhs_val, rhs_val);
-  throw std::logic_error(fmt::format("unknown operator: {}", node->op));
+  throw std::logic_error(fmt::format("unknown binary operator: {}", node->op));
 }
 
 llvm::Value *IRGen::operator()(std::unique_ptr<ast::CallExprNode> &node) {
