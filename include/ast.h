@@ -205,8 +205,6 @@ struct CallExprNode {
   bool operator==(const CallExprNode &rhs) const = default;
 };
 
-struct TaggedTypeNode;
-
 /**
  * @brief AST node for basic types.
  */
@@ -243,7 +241,8 @@ struct BasicTypeNode {
 /**
  * @brief AST node for types.
  */
-using TypeNode = std::variant<std::unique_ptr<TaggedTypeNode>, BasicTypeNode>;
+using TypeNode =
+    std::variant<std::unique_ptr<struct TaggedTypeNode>, BasicTypeNode>;
 
 /**
  * @brief AST node for type tag.
