@@ -108,8 +108,53 @@ struct VariableExprNode {
  */
 using ExprNode = std::variant<LiteralExprNode<int>, LiteralExprNode<double>,
                               LiteralExprNode<bool>, VariableExprNode,
+                              std::unique_ptr<struct UnaryExprNode>,
                               std::unique_ptr<struct BinaryExprNode>,
                               std::unique_ptr<struct CallExprNode>>;
+
+/**
+ * @brief AST node for unary expressions.
+ */
+struct UnaryExprNode {
+  /**
+   * @brief Operator of the unary expression.
+   */
+  std::string op;
+
+  /**
+   * @brief Operand of the unary expression.
+   */
+  ExprNode rhs;
+
+  /**
+   * @brief Type of the unary expression.
+   */
+  std::optional<std::string> expr_type = {};
+
+  /**
+   * @brief Move constructor.
+   */
+  UnaryExprNode(UnaryExprNode &&) = default;
+
+  /**
+   * @brief Instantiate from operator and operand.
+   * @param op Operator of the unary expression.
+   * @param rhs Operand of the unary expression.
+   */
+  explicit UnaryExprNode(const std::string &op, ExprNode rhs);
+
+  /**
+   * @brief Move assignment operator.
+   */
+  UnaryExprNode &operator=(UnaryExprNode &&) = default;
+
+  /**
+   * @brief Comparision operator overload.
+   * @param rhs ``UnaryExprNode`` on the RHS.
+   * @return Whether the objects referenced by ``this`` and ``rhs`` are equal.
+   */
+  bool operator==(const UnaryExprNode &rhs) const = default;
+};
 
 /**
  * @brief AST node for binary expressions.

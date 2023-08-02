@@ -14,6 +14,9 @@ LiteralExprNode<T>::LiteralExprNode(T value) : value(value) {}
 
 VariableExprNode::VariableExprNode(const std::string &name) : name(name) {}
 
+UnaryExprNode::UnaryExprNode(const std::string &op, ExprNode rhs)
+    : op(op), rhs(std::move(rhs)) {}
+
 BinaryExprNode::BinaryExprNode(const std::string &op, ExprNode lhs,
                                ExprNode rhs)
     : op(op), lhs(std::move(lhs)), rhs(std::move(rhs)) {}

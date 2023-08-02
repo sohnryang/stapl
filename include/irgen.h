@@ -48,6 +48,28 @@ private:
       {};
 
   /**
+   * @brief Generate IR for positive prefix operation of ``llvm::Value *``.
+   * @param rhs_val The value to negate.
+   * @return The result of the negation.
+   * @note This is basically a no-op, but it can be overloaded in the future.
+   */
+  llvm::Value *unary_op_pos(llvm::Value *rhs_val);
+
+  /**
+   * @brief Generate IR for integer negation of ``llvm::Value *``.
+   * @param rhs_val The value to negate.
+   * @return The result of the negation.
+   */
+  llvm::Value *unary_op_neg(llvm::Value *rhs_val);
+
+  /**
+   * @brief Generate IR for boolean negation of ``llvm::Value *``.
+   * @param rhs_val The value to negate.
+   * @return The result of the negation.
+   */
+  llvm::Value *unary_op_not(llvm::Value *rhs_val);
+
+  /**
    * @brief Gernerate IR for addition of two ``llvm::Value *``.
    * @param lhs_val The value on LHS.
    * @param rhs_val The value on RHS.
@@ -195,6 +217,13 @@ public:
    * @return The generated IR.
    */
   llvm::Value *operator()(ast::VariableExprNode &node);
+
+  /**
+   * @brief Generate IR for unary expression node.
+   * @param node The node to generate IR for.
+   * @return The generated IR.
+   */
+  llvm::Value *operator()(std::unique_ptr<ast::UnaryExprNode> &node);
 
   /**
    * @brief Generate IR for binary expression node.

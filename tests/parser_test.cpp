@@ -43,6 +43,30 @@ TEST(ParserTest, Prototype) {
   EXPECT_EQ(expected, parsed);
 }
 
+TEST(ParserTest, UnaryExpr) {
+  Parser parser("-42");
+  ExprNode expected =
+               std::make_unique<UnaryExprNode>("-", LiteralExprNode<int>(42)),
+           parsed = parser.parse_unary_expr();
+  EXPECT_EQ(expected, parsed);
+}
+
+TEST(ParserTest, UnaryExprWithBinary) {
+  Parser parser("+(-42 + -x) == !y");
+  ExprNode expected = std::make_unique<BinaryExprNode>(
+               "==",
+               std::make_unique<UnaryExprNode>(
+                   "+", std::make_unique<BinaryExprNode>(
+                            "+",
+                            std::make_unique<UnaryExprNode>(
+                                "-", LiteralExprNode<int>(42)),
+                            std::make_unique<UnaryExprNode>(
+                                "-", VariableExprNode("x")))),
+               std::make_unique<UnaryExprNode>("!", VariableExprNode("y"))),
+           parsed = parser.parse_expr();
+  EXPECT_EQ(expected, parsed);
+}
+
 TEST(ParserTest, Expr) {
   Parser parser("a*a + b*b - c*c + x%m + y/q != 0");
   ExprNode expected = std::make_unique<BinaryExprNode>(

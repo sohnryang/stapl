@@ -40,6 +40,13 @@ public:
   std::string operator()(const VariableExprNode &node) const;
 
   /**
+   * @brief Represent ``UnaryExprNode`` as string.
+   * @param node The node to represent.
+   * @return The string representation of the node.
+   */
+  std::string operator()(const std::unique_ptr<UnaryExprNode> &node) const;
+
+  /**
    * @brief Represent ``BinaryExprNode`` as string.
    * @param node The node to represent.
    * @return The string representation of the node.

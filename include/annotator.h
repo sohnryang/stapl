@@ -68,6 +68,14 @@ public:
   std::string operator()(ast::VariableExprNode &node);
 
   /**
+   * @brief Annotate the type of a unary expression node and return the
+   * annotated type name.
+   * @param node The node to annotate.
+   * @return The annotated type of the node.
+   */
+  std::string operator()(std::unique_ptr<ast::UnaryExprNode> &node);
+
+  /**
    * @brief Annotate the type of a binary expression node and return the
    * annotated type name.
    * @param node The node to annotate.

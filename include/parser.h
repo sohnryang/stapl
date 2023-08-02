@@ -47,6 +47,11 @@ private:
       {"+", 20}, {"-", 20},  {"*", 40}, {"/", 40},  {"%", 40}};
 
   /**
+   * @brief Set of unary operators.
+   */
+  std::set<std::string> unary_ops = {"+", "-", "!"};
+
+  /**
    * @brief Get precedence of ``current_token``.
    * @return Precedence of ``current_token``.
    */
@@ -95,6 +100,12 @@ public:
    * @return A parsed primary node.
    */
   ast::ExprNode parse_primary();
+
+  /**
+   * @brief Parse an unary expression.
+   * @return A parsed unary expression node.
+   */
+  ast::ExprNode parse_unary_expr();
 
   /**
    * @brief Parse a binary operator and rhs.
