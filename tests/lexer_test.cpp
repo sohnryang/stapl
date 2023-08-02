@@ -62,7 +62,8 @@ TEST(LexerTest, Proto) {
 }
 
 TEST(LexerTest, Operator) {
-  Lexer lexer("1 + 2 * 3 >= 0");
+  Lexer lexer("(1 + 2 * 3 >= 0) != false");
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "("));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "1"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Op, "+"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "2"));
@@ -70,6 +71,9 @@ TEST(LexerTest, Operator) {
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "3"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Op, ">="));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "0"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, ")"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Op, "!="));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Bool, "false"));
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Eof, ""));
 }
 
