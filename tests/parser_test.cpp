@@ -223,6 +223,42 @@ TEST(ParserTest, IfElseifElse) {
   EXPECT_EQ(expected, parsed);
 }
 
+TEST(ParserTest, While) {
+  Parser parser(R"(while x == y {
+  if x == 0 {
+    continue
+  } else if x > 0 {
+    break
+  }
+  x = x + 1
+  y = f(x)
+})");
+  auto while_body = make_vector<StmtNode>(
+      std::make_unique<IfStmtNode>(
+          std::make_unique<BinaryExprNode>("==", VariableExprNode("x"),
+                                           LiteralExprNode<int>(0)),
+          std::make_unique<CompoundStmtNode>(
+              make_vector<StmtNode>(ContinueStmtNode())),
+          std::make_unique<IfStmtNode>(
+              std::make_unique<BinaryExprNode>(">", VariableExprNode("x"),
+                                               LiteralExprNode<int>(0)),
+              std::make_unique<CompoundStmtNode>(
+                  make_vector<StmtNode>(BreakStmtNode())),
+              std::make_unique<CompoundStmtNode>(std::vector<StmtNode>()))),
+      AssignmentStmtNode(
+          "x", std::make_unique<BinaryExprNode>("+", VariableExprNode("x"),
+                                                LiteralExprNode<int>(1))),
+      AssignmentStmtNode(
+          "y", std::make_unique<CallExprNode>(
+                   "f", make_vector<ExprNode>(VariableExprNode("x")))));
+  StmtNode expected = std::make_unique<WhileStmtNode>(
+               std::make_unique<BinaryExprNode>("==", VariableExprNode("x"),
+                                                VariableExprNode("y")),
+               std::make_unique<CompoundStmtNode>(std::move(while_body))),
+           parsed = parser.parse_while();
+  EXPECT_EQ(expected, parsed);
+}
+
 TEST(ParserTest, Return) {
   Parser parser("return f(42) + 10 - x");
   StmtNode expected(ReturnStmtNode(std::make_unique<BinaryExprNode>(
