@@ -12,19 +12,7 @@
 #include <fmt/core.h>
 
 namespace stapl::parsing {
-Parser::Parser(std::string code) : lexer(code) {
-  binop_prec["<"] = 10;
-  binop_prec["<="] = 10;
-  binop_prec[">"] = 10;
-  binop_prec[">="] = 10;
-  binop_prec["=="] = 10;
-  binop_prec["+"] = 20;
-  binop_prec["-"] = 20;
-  binop_prec["*"] = 40;
-  binop_prec["/"] = 40;
-  binop_prec["%"] = 40;
-  next_token();
-}
+Parser::Parser(std::string code) : lexer(code) { next_token(); }
 
 int Parser::get_prec() {
   if (binop_prec.count(current_token.second) == 0)

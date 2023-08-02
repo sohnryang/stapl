@@ -42,7 +42,9 @@ private:
   /**
    * @brief Precedence table for binary operators.
    */
-  std::map<std::string, int> binop_prec;
+  std::map<std::string, int> binop_prec = {
+      {"<", 10}, {"<=", 10}, {">", 10}, {">=", 10}, {"==", 10},
+      {"+", 20}, {"-", 20},  {"*", 40}, {"/", 40},  {"%", 40}};
 
   /**
    * @brief Get precedence of ``current_token``.
