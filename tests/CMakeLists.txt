@@ -7,15 +7,29 @@ set(gtest_force_shared_crt
     ON
     CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
-
-add_executable(tests lexer_test.cpp parser_test.cpp annotator_test.cpp)
-target_link_libraries(
-  tests
-  PRIVATE GTest::gtest_main
-  PRIVATE Lexer
-  PRIVATE Parser
-  PRIVATE AST
-  PRIVATE TypeChecker)
-target_include_directories(tests PRIVATE "${PROJECT_SOURCE_DIR}/include")
 include(GoogleTest)
-gtest_discover_tests(tests)
+
+add_executable(lexer_test lexer_test.cpp)
+target_link_libraries(
+  lexer_test
+  PRIVATE GTest::gtest_main
+  PRIVATE Lexer)
+target_include_directories(lexer_test PRIVATE "${PROJECT_SOURCE_DIR}/include")
+gtest_discover_tests(lexer_test)
+
+add_executable(parser_test parser_test.cpp)
+target_link_libraries(
+  parser_test
+  PRIVATE GTest::gtest_main
+  PRIVATE Parser)
+target_include_directories(parser_test PRIVATE "${PROJECT_SOURCE_DIR}/include")
+gtest_discover_tests(parser_test)
+
+add_executable(annotator_test annotator_test.cpp)
+target_link_libraries(
+  annotator_test
+  PRIVATE GTest::gtest_main
+  PRIVATE TypeChecker)
+target_include_directories(annotator_test
+                           PRIVATE "${PROJECT_SOURCE_DIR}/include")
+gtest_discover_tests(annotator_test)
