@@ -18,11 +18,14 @@ The grammar of stapl language is defined as follows:
    param_list = param , { "," , param } ;
    param = id , ":" , type_name ;
 
-   stmt = let_stmt | assign_stmt | if_stmt | return_stmt | compound_stmt ;
+   stmt = let_stmt | assign_stmt | if_stmt | while_stmt | jump_stmt
+        | return_stmt | compound_stmt ;
    let_stmt = "let" , id , ":" , type_name ;
    assign_operator = "=" ;
    assign_stmt = id , assign_operator , expr ;
    if_stmt = "if" , expr , compound_stmt , [ else , stmt ] ;
+   while_stmt = "while" , expr , compound_stmt ;
+   jump_stmt = "break" | "continue" ;
    return_stmt = "return" , expr ;
    compound_stmt = "{" , { stmt } , "}" ;
 
