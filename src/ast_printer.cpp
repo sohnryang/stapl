@@ -22,6 +22,12 @@ std::string ASTPrinter::operator()(const VariableExprNode &node) const {
 }
 
 std::string
+ASTPrinter::operator()(const std::unique_ptr<UnaryExprNode> &node) const {
+  return fmt::format("UnaryExpr({}, {})", node->op,
+                     std::visit(*this, node->rhs));
+}
+
+std::string
 ASTPrinter::operator()(const std::unique_ptr<BinaryExprNode> &node) const {
   return fmt::format("BinaryExpr({}, {}, {})", node->op,
                      std::visit(*this, node->lhs),

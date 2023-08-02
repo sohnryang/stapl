@@ -17,6 +17,7 @@ Welcome to stapl's documentation!
    Types <types.rst>
    Type Annotator <annotator.rst>
    IR Generation <irgen.rst>
+   Utility <util.rst>
 
 
 Indices and tables

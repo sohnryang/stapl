@@ -37,6 +37,39 @@ TEST(TypeCheckerTest, Variables) {
   EXPECT_THROW(std::visit(a, var_y_expr), std::logic_error);
 }
 
+TEST(TypeCheckerTest, UnaryExpr) {
+  auto let_stmts =
+      make_vector<StmtNode>(LetStmtNode("x", "int"), LetStmtNode("y", "int"));
+  StmtNode block_stmt =
+      std::make_unique<CompoundStmtNode>(std::move(let_stmts));
+  ExprNode expr = std::make_unique<UnaryExprNode>(
+      "!",
+      std::make_unique<BinaryExprNode>(
+          "==", std::make_unique<UnaryExprNode>("-", VariableExprNode("x")),
+          std::make_unique<UnaryExprNode>("+", VariableExprNode("y"))));
+  TypeAnnotator a;
+  std::visit(a, block_stmt);
+  EXPECT_EQ(std::visit(a, expr), "bool");
+  EXPECT_EQ(std::get<std::unique_ptr<UnaryExprNode>>(expr)->expr_type.value(),
+            "bool");
+  EXPECT_EQ(std::get<std::unique_ptr<BinaryExprNode>>(
+                std::get<std::unique_ptr<UnaryExprNode>>(expr)->rhs)
+                ->expr_type.value(),
+            "bool");
+  EXPECT_EQ(std::get<std::unique_ptr<UnaryExprNode>>(
+                std::get<std::unique_ptr<BinaryExprNode>>(
+                    std::get<std::unique_ptr<UnaryExprNode>>(expr)->rhs)
+                    ->lhs)
+                ->expr_type.value(),
+            "int");
+  EXPECT_EQ(std::get<std::unique_ptr<UnaryExprNode>>(
+                std::get<std::unique_ptr<BinaryExprNode>>(
+                    std::get<std::unique_ptr<UnaryExprNode>>(expr)->rhs)
+                    ->rhs)
+                ->expr_type.value(),
+            "int");
+}
+
 TEST(TypeCheckerTest, BinaryExpr) {
   auto let_stmts =
       make_vector<StmtNode>(LetStmtNode("x", "int"), LetStmtNode("y", "int"),

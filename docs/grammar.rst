@@ -30,6 +30,9 @@ The grammar of stapl language is defined as follows:
 
    expr = primary , binop_rhs | paren_expr ;
    primary = id | func_call | literal | paren_expr | array_subscript ;
+   unary_operator = "+" | "-" | "!" ;
+   unary_expr = unary_operator , unary_expr | primary ;
+   expr = unary_expr , binop_rhs | paren_expr ;
    func_call = id , "(" , [ expr_list ] , ")" ;
    array_subscript = primary , "[" , int_literal , "]" ;
    expr_list = expr , { "," , expr } ;
@@ -37,4 +40,4 @@ The grammar of stapl language is defined as follows:
    literal = int_literal | float_literal | bool_literal ;
    binary_operator = "+" | "-" | "*" | "/" | "%"
                    | "==" | "!=" | ">" | ">=" | "<" | "<=" ;
-   binop_rhs = { binary_operator , primary } ;
+   binop_rhs = { binary_operator , unary_expr } ;

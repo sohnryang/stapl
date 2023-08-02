@@ -2,6 +2,7 @@
 #include "ast.h"
 
 #include <cstdint>
+#include <memory>
 #include <ostream>
 #include <stdexcept>
 #include <string>
@@ -39,6 +40,22 @@ void IRGen::codegen(ast::Module &module_node) {
 void IRGen::write_ir(std::ostream &os) {
   llvm::raw_os_ostream out_stream(os);
   module->print(out_stream, nullptr);
+}
+
+llvm::Value *IRGen::unary_op_pos(llvm::Value *rhs_val) { return rhs_val; }
+
+llvm::Value *IRGen::unary_op_neg(llvm::Value *rhs_val) {
+  if (rhs_val->getType()->isDoubleTy())
+    return builder->CreateFNeg(rhs_val);
+  if (rhs_val->getType()->isIntegerTy())
+    return builder->CreateNeg(rhs_val);
+  throw std::logic_error("unknown type signature");
+}
+
+llvm::Value *IRGen::unary_op_not(llvm::Value *rhs_val) {
+  if (rhs_val->getType()->isIntegerTy())
+    return builder->CreateNot(rhs_val);
+  throw std::logic_error("unknown type signature");
 }
 
 llvm::Value *IRGen::binary_op_add(llvm::Value *lhs_val, llvm::Value *rhs_val) {
@@ -162,6 +179,20 @@ llvm::Type *IRGen::type_from_typename(const std::string &name) {
   else if (name == "void")
     return builder->getVoidTy();
   throw std::logic_error(fmt::format("unknown type: {}", name));
+}
+
+llvm::Value *IRGen::operator()(std::unique_ptr<ast::UnaryExprNode> &node) {
+  auto rhs_val = std::visit(*this, node->rhs);
+  if (rhs_val == nullptr)
+    throw std::logic_error("failed to codegen for rhs");
+
+  if (node->op == "+")
+    return unary_op_pos(rhs_val);
+  else if (node->op == "-")
+    return unary_op_neg(rhs_val);
+  else if (node->op == "!")
+    return unary_op_not(rhs_val);
+  throw std::logic_error(fmt::format("unknown unary operator: {}", node->op));
 }
 
 llvm::Value *IRGen::operator()(std::unique_ptr<ast::BinaryExprNode> &node) {

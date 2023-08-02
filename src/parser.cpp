@@ -54,7 +54,7 @@ ast::LiteralExprNode<bool> Parser::parse_bool() {
 }
 
 ast::ExprNode Parser::parse_expr() {
-  auto lhs = parse_primary();
+  auto lhs = parse_unary_expr();
   return parse_binop_rhs(0, std::move(lhs));
 }
 
@@ -85,6 +85,16 @@ ast::ExprNode Parser::parse_primary() {
   }
 }
 
+ast::ExprNode Parser::parse_unary_expr() {
+  if (unary_ops.count(current_token.second)) {
+    auto op = current_token;
+    next_token();
+    auto rhs = parse_unary_expr();
+    return std::make_unique<ast::UnaryExprNode>(op.second, std::move(rhs));
+  }
+  return parse_primary();
+}
+
 ast::ExprNode Parser::parse_binop_rhs(int expr_prec, ast::ExprNode lhs) {
   while (true) {
     int token_prec = get_prec();
@@ -94,7 +104,7 @@ ast::ExprNode Parser::parse_binop_rhs(int expr_prec, ast::ExprNode lhs) {
     auto op = current_token;
     next_token();
 
-    auto rhs = std::move(parse_primary());
+    auto rhs = std::move(parse_unary_expr());
     int next_prec = get_prec();
     if (token_prec < next_prec)
       rhs = parse_binop_rhs(token_prec + 1, std::move(rhs));
