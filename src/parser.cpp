@@ -85,6 +85,16 @@ ast::ExprNode Parser::parse_primary() {
   }
 }
 
+ast::ExprNode Parser::parse_unary_expr() {
+  if (unary_ops.count(current_token.second)) {
+    auto op = current_token;
+    next_token();
+    auto rhs = parse_unary_expr();
+    return std::make_unique<ast::UnaryExprNode>(op.second, std::move(rhs));
+  }
+  return parse_primary();
+}
+
 ast::ExprNode Parser::parse_binop_rhs(int expr_prec, ast::ExprNode lhs) {
   while (true) {
     int token_prec = get_prec();
