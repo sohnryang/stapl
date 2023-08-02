@@ -421,6 +421,11 @@ struct BreakStmtNode {
   BreakStmtNode(BreakStmtNode &&) = default;
 
   /**
+   * @brief Default constructor.
+   */
+  explicit BreakStmtNode() = default;
+
+  /**
    * @brief Move assignment operator.
    */
   BreakStmtNode &operator=(BreakStmtNode &&) = default;
@@ -441,6 +446,11 @@ struct ContinueStmtNode {
    * @brief Move constructor.
    */
   ContinueStmtNode(ContinueStmtNode &&) = default;
+
+  /**
+   * @brief Default constructor.
+   */
+  explicit ContinueStmtNode() = default;
 
   /**
    * @brief Move assignment operator.
