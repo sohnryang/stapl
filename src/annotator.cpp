@@ -13,8 +13,13 @@
 
 namespace stapl::types {
 TypeAnnotator::TypeAnnotator() {
-  func_types["+"] = func_types["-"] = func_types["*"] = func_types["/"] = {
-      {{"int", "int"}, "int"}, {{"float", "float"}, "float"}};
+  func_types["+"] = func_types["-"] = {{{"int", "int"}, "int"},
+                                       {{"float", "float"}, "float"},
+                                       {{"int"}, "int"},
+                                       {{"float"}, "float"}};
+  func_types["*"] = func_types["/"] = {{{"int", "int"}, "int"},
+                                       {{"float", "float"}, "float"}};
+  func_types["!"] = {{{"bool"}, "bool"}};
   func_types["=="] = func_types["!="] = func_types["<"] = func_types[">"] =
       func_types["<="] = func_types[">="] = {{{"int", "int"}, "bool"},
                                              {{"float", "float"}, "bool"},
@@ -39,6 +44,19 @@ std::string TypeAnnotator::operator()(ast::LiteralExprNode<bool> &node) {
 std::string TypeAnnotator::operator()(ast::VariableExprNode &node) {
   node.expr_type = variable_type_names.at(node.name);
   return node.expr_type.value();
+}
+
+std::string
+TypeAnnotator::operator()(std::unique_ptr<ast::UnaryExprNode> &node) {
+  if (node->expr_type.has_value())
+    return node->expr_type.value();
+  for (const auto &func_type : func_types.at(node->op)) {
+    if (func_type.arg_types !=
+        std::vector<std::string>{std::visit(*this, node->rhs)})
+      continue;
+    node->expr_type = func_type.return_type;
+  }
+  return node->expr_type.value();
 }
 
 std::string
