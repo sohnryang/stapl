@@ -147,6 +147,13 @@ struct UnaryExprNode {
    * @brief Move assignment operator.
    */
   UnaryExprNode &operator=(UnaryExprNode &&) = default;
+
+  /**
+   * @brief Comparision operator overload.
+   * @param rhs ``UnaryExprNode`` on the RHS.
+   * @return Whether the objects referenced by ``this`` and ``rhs`` are equal.
+   */
+  bool operator==(const UnaryExprNode &rhs) const = default;
 };
 
 /**
