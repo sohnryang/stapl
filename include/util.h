@@ -27,7 +27,7 @@ std::vector<T> make_vector(std::array<T, N> &&arr) {
 
 /**
  * @brief Make ``std::vector`` from variadic arguments.
- * @tparam T Type of created ``std::vector``.
+ * @tparam T Type of elements in created ``std::vector``.
  * @tparam U Template parameter pack of varadic arguments.
  * @param t Variadic arguments.
  * @return ``std::vector<T>`` with elements from ``t``.
