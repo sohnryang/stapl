@@ -26,12 +26,14 @@ The grammar of stapl language is defined as follows:
    return_stmt = "return" , expr ;
    compound_stmt = "{" , { stmt } , "}" ;
 
-   expr = primary , binop_rhs | paren_expr ;
    primary = id | func_call | literal | paren_expr ;
+   unary_operator = "+" | "-" ;
+   unary_expr = unary_operator , unary_expr | primary ;
+   expr = unary_expr , binop_rhs | paren_expr ;
    func_call = id , "(" , [ expr_list ] , ")" ;
    expr_list = expr , { "," , expr } ;
    bool_literal = "true" | "false" ;
    literal = int_literal | float_literal | bool_literal ;
    binary_operator = "+" | "-" | "*" | "/" | "%"
                    | "==" | "!=" | ">" | ">=" | "<" | "<=" ;
-   binop_rhs = { binary_operator , primary } ;
+   binop_rhs = { binary_operator , unary_expr } ;
