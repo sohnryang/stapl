@@ -86,6 +86,42 @@ TEST(LexerTest, If) {
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Eof, ""));
 }
 
+TEST(LexerTest, While) {
+  Lexer lexer(R"(while x > 0 {
+  if x % 2 == 0 {
+    continue
+  } else if x % 3 == 2 {
+    break
+  }
+})");
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::While, "while"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Identifier, "x"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Op, ">"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "0"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "{"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::If, "if"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Identifier, "x"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Op, "%"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "2"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Op, "=="));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "0"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "{"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Continue, "continue"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "}"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Else, "else"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::If, "if"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Identifier, "x"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Op, "%"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "3"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Op, "=="));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Int, "2"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "{"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Break, "break"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "}"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Misc, "}"));
+  EXPECT_EQ(lexer.get_token(), Token(TokenKind::Eof, ""));
+}
+
 TEST(LexerTest, Let) {
   Lexer lexer("let x: int");
   EXPECT_EQ(lexer.get_token(), Token(TokenKind::Let, "let"));
