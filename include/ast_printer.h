@@ -89,6 +89,27 @@ public:
   std::string operator()(const std::unique_ptr<IfStmtNode> &node) const;
 
   /**
+   * @brief Represent ``WhileStmtNode`` as string.
+   * @param node The node to represent.
+   * @return The string representation of the node.
+   */
+  std::string operator()(const std::unique_ptr<WhileStmtNode> &node) const;
+
+  /**
+   * @brief Represent ``BreakStmtNode`` as string.
+   * @param node The node to represent.
+   * @return The string representation of the node.
+   */
+  std::string operator()(const BreakStmtNode &node) const;
+
+  /**
+   * @brief Represent ``ContinueStmtNode`` as string.
+   * @param node The node to represent.
+   * @return The string representation of the node.
+   */
+  std::string operator()(const ContinueStmtNode &node) const;
+
+  /**
    * @brief Represent ``ReturnStmtNode`` as string.
    * @param node The node to represent.
    * @return The string representation of the node.

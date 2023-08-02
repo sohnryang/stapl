@@ -72,6 +72,20 @@ ASTPrinter::operator()(const std::unique_ptr<IfStmtNode> &node) const {
                      std::visit(*this, node->else_stmt));
 }
 
+std::string
+ASTPrinter::operator()(const std::unique_ptr<WhileStmtNode> &node) const {
+  return fmt::format("While({}, {})", std::visit(*this, node->condition),
+                     std::visit(*this, node->body));
+}
+
+std::string ASTPrinter::operator()(const BreakStmtNode &node) const {
+  return "Break";
+}
+
+std::string ASTPrinter::operator()(const ContinueStmtNode &node) const {
+  return "Continue";
+}
+
 std::string ASTPrinter::operator()(const ReturnStmtNode &node) const {
   return fmt::format("Return({})", std::visit(*this, node.return_expr));
 }
