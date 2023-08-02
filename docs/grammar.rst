@@ -27,7 +27,7 @@ The grammar of stapl language is defined as follows:
    compound_stmt = "{" , { stmt } , "}" ;
 
    primary = id | func_call | literal | paren_expr ;
-   unary_operator = "+" | "-" ;
+   unary_operator = "+" | "-" | "!" ;
    unary_expr = unary_operator , unary_expr | primary ;
    expr = unary_expr , binop_rhs | paren_expr ;
    func_call = id , "(" , [ expr_list ] , ")" ;
