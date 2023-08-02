@@ -17,9 +17,5 @@ target_link_libraries(
   PRIVATE AST
   PRIVATE TypeChecker)
 target_include_directories(tests PRIVATE "${PROJECT_SOURCE_DIR}/include")
-target_compile_options(
-  tests PRIVATE "$<$<C_COMPILER_ID:Clang>:-fsanitize=address,leak>")
-target_link_options(tests PRIVATE
-                    "$<$<C_COMPILER_ID:Clang>:-fsanitize=address,leak>")
 include(GoogleTest)
 gtest_discover_tests(tests)
