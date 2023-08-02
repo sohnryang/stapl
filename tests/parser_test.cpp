@@ -43,6 +43,14 @@ TEST(ParserTest, Prototype) {
   EXPECT_EQ(expected, parsed);
 }
 
+TEST(ParserTest, UnaryExpr) {
+  Parser parser("-42");
+  ExprNode expected =
+               std::make_unique<UnaryExprNode>("-", LiteralExprNode<int>(42)),
+           parsed = parser.parse_unary_expr();
+  EXPECT_EQ(expected, parsed);
+}
+
 TEST(ParserTest, Expr) {
   Parser parser("a*a + b*b - c*c + x%m + y/q");
   ExprNode
