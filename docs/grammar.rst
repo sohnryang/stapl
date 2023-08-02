@@ -22,7 +22,8 @@ The grammar of stapl language is defined as follows:
    let_stmt = "let" , id , ":" , type_name ;
    assign_operator = "=" ;
    assign_stmt = id , assign_operator , expr ;
-   if_stmt = "if" , expr , compound_stmt , [ else , stmt ] ;
+   if_stmt = "if" , expr , compound_stmt , [ else , else_body ] ;
+   else_body = compound_stmt | if_stmt ;
    return_stmt = "return" , expr ;
    compound_stmt = "{" , { stmt } , "}" ;
 
