@@ -138,6 +138,12 @@ ast::StmtNode Parser::parse_stmt() {
     return parse_assign_or_call();
   case TokenKind::If:
     return parse_if();
+  case TokenKind::While:
+    return parse_while();
+  case TokenKind::Break:
+    return parse_break();
+  case TokenKind::Continue:
+    return parse_continue();
   case TokenKind::Return:
     return parse_return();
   case TokenKind::Misc:
@@ -187,6 +193,24 @@ ast::StmtNode Parser::parse_if() {
     return std::make_unique<ast::IfStmtNode>(
         std::move(condition), std::move(then_stmt), std::move(else_stmt));
   }
+}
+
+ast::StmtNode Parser::parse_while() {
+  next_token();
+  auto condition = parse_expr();
+  auto body = parse_compound();
+  return std::make_unique<ast::WhileStmtNode>(std::move(condition),
+                                              std::move(body));
+}
+
+ast::StmtNode Parser::parse_break() {
+  next_token();
+  return ast::BreakStmtNode();
+}
+
+ast::StmtNode Parser::parse_continue() {
+  next_token();
+  return ast::ContinueStmtNode();
 }
 
 ast::StmtNode Parser::parse_return() {
