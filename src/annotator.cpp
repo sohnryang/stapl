@@ -19,6 +19,7 @@ TypeAnnotator::TypeAnnotator() {
                                        {{"float"}, "float"}};
   func_types["*"] = func_types["/"] = {{{"int", "int"}, "int"},
                                        {{"float", "float"}, "float"}};
+  func_types["%"] = {{{"int", "int"}, "int"}};
   func_types["!"] = {{{"bool"}, "bool"}};
   func_types["=="] = func_types["!="] = func_types["<"] = func_types[">"] =
       func_types["<="] = func_types[">="] = {{{"int", "int"}, "bool"},
