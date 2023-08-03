@@ -95,6 +95,12 @@ llvm::Value *IRGen::binary_op_div(llvm::Value *lhs_val, llvm::Value *rhs_val) {
   throw std::logic_error("unknown type signature");
 }
 
+llvm::Value *IRGen::binary_op_mod(llvm::Value *lhs_val, llvm::Value *rhs_val) {
+  if (lhs_val->getType()->isIntegerTy() && rhs_val->getType()->isIntegerTy())
+    return builder->CreateSRem(lhs_val, rhs_val);
+  throw std::logic_error("unknown type signature");
+}
+
 llvm::Value *IRGen::binary_op_eq(llvm::Value *lhs_val, llvm::Value *rhs_val) {
   if (lhs_val->getType()->isDoubleTy() && rhs_val->getType()->isDoubleTy())
     return builder->CreateFCmpOEQ(lhs_val, rhs_val);
@@ -211,6 +217,8 @@ llvm::Value *IRGen::operator()(std::unique_ptr<ast::BinaryExprNode> &node) {
     return binary_op_mul(lhs_val, rhs_val);
   else if (node->op == "/")
     return binary_op_div(lhs_val, rhs_val);
+  else if (node->op == "%")
+    return binary_op_mod(lhs_val, rhs_val);
   else if (node->op == "==")
     return binary_op_eq(lhs_val, rhs_val);
   else if (node->op == "!=")

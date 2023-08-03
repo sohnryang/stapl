@@ -102,6 +102,14 @@ private:
   llvm::Value *binary_op_div(llvm::Value *lhs_val, llvm::Value *rhs_val);
 
   /**
+   * @brief Gernerate IR for modulo of two ``llvm::Value *``.
+   * @param lhs_val The value on LHS.
+   * @param rhs_val The value on RHS.
+   * @return The result of the modulo.
+   */
+  llvm::Value *binary_op_mod(llvm::Value *lhs_val, llvm::Value *rhs_val);
+
+  /**
    * @brief Gernerate IR for equality of two ``llvm::Value *``.
    * @param lhs_val The value on LHS.
    * @param rhs_val The value on RHS.
