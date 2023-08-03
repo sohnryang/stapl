@@ -48,6 +48,16 @@ private:
       {};
 
   /**
+   * @brief The cond block of the current loop.
+   */
+  llvm::BasicBlock *current_loop_cond = nullptr;
+
+  /**
+   * @brief The merge block of the current loop.
+   */
+  llvm::BasicBlock *current_loop_merge = nullptr;
+
+  /**
    * @brief Generate IR for positive prefix operation of ``llvm::Value *``.
    * @param rhs_val The value to negate.
    * @return The result of the negation.
@@ -256,6 +266,24 @@ public:
    * @param node The node to generate IR for.
    */
   void operator()(std::unique_ptr<ast::IfStmtNode> &node);
+
+  /**
+   * @brief Generate IR for while statement node and add to current block.
+   * @param node The node to generate IR for.
+   */
+  void operator()(std::unique_ptr<ast::WhileStmtNode> &node);
+
+  /**
+   * @brief Generate IR for break statement node and add to current block.
+   * @param node The node to generate IR for.
+   */
+  void operator()(ast::BreakStmtNode &node);
+
+  /**
+   * @brief Generate IR for continue statement node and add to current block.
+   * @param node The node to generate IR for.
+   */
+  void operator()(ast::ContinueStmtNode &node);
 
   /**
    * @brief Generate IR for return statement node and add to current block.

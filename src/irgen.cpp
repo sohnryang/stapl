@@ -292,6 +292,50 @@ void IRGen::operator()(std::unique_ptr<ast::IfStmtNode> &node) {
   builder->SetInsertPoint(merge_block);
 }
 
+void IRGen::operator()(std::unique_ptr<ast::WhileStmtNode> &node) {
+  llvm::Function *current_func = builder->GetInsertBlock()->getParent();
+
+  llvm::BasicBlock *cond_block =
+                       llvm::BasicBlock::Create(*context, "cond", current_func),
+                   *body_block = llvm::BasicBlock::Create(*context, "body"),
+                   *merge_block = llvm::BasicBlock::Create(*context, "merge"),
+                   *cond_block_old = current_loop_cond,
+                   *merge_block_old = current_loop_merge;
+
+  builder->CreateBr(cond_block);
+  builder->SetInsertPoint(cond_block);
+  llvm::Value *cond_expr = std::visit(*this, node->condition);
+  builder->CreateCondBr(cond_expr, body_block, merge_block);
+
+  current_func->insert(current_func->end(), body_block);
+  builder->SetInsertPoint(body_block);
+
+  current_loop_cond = cond_block;
+  current_loop_merge = merge_block;
+
+  std::visit(*this, node->body);
+  if (builder->GetInsertBlock()->getTerminator() == nullptr)
+    builder->CreateBr(cond_block);
+
+  current_func->insert(current_func->end(), merge_block);
+  builder->SetInsertPoint(merge_block);
+
+  current_loop_cond = cond_block_old;
+  current_loop_merge = merge_block_old;
+}
+
+void IRGen::operator()(ast::BreakStmtNode &node) {
+  if (current_loop_merge == nullptr)
+    throw std::logic_error("break statement outside of loop");
+  builder->CreateBr(current_loop_merge);
+}
+
+void IRGen::operator()(ast::ContinueStmtNode &node) {
+  if (current_loop_cond == nullptr)
+    throw std::logic_error("continue statement outside of loop");
+  builder->CreateBr(current_loop_cond);
+}
+
 void IRGen::operator()(ast::ReturnStmtNode &node) {
   llvm::Value *return_expr = std::visit(*this, node.return_expr);
   builder->CreateRet(return_expr);
