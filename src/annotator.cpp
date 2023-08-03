@@ -116,6 +116,20 @@ void TypeAnnotator::operator()(std::unique_ptr<ast::IfStmtNode> &node) {
   std::visit(*this, node->else_stmt);
 }
 
+void TypeAnnotator::operator()(std::unique_ptr<ast::WhileStmtNode> &node) {
+  std::string condition_type = std::visit(*this, node->condition);
+
+  // TODO: add dedicated exception for type error
+  if (condition_type != "bool")
+    throw std::logic_error(fmt::format(
+        "type mismatch: condition must be bool but {}", condition_type));
+  std::visit(*this, node->body);
+}
+
+void TypeAnnotator::operator()(ast::BreakStmtNode &node) {}
+
+void TypeAnnotator::operator()(ast::ContinueStmtNode &node) {}
+
 void TypeAnnotator::operator()(ast::ReturnStmtNode &node) {
   std::visit(*this, node.return_expr);
 }

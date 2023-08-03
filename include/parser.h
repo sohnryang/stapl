@@ -153,6 +153,24 @@ public:
   ast::StmtNode parse_if();
 
   /**
+   * @brief Parse a ``while`` statement.
+   * @return A parsed ``while`` statement.
+   */
+  ast::StmtNode parse_while();
+
+  /**
+   * @brief Parse a ``break`` statement.
+   * @return A parsed ``break`` statement.
+   */
+  ast::StmtNode parse_break();
+
+  /**
+   * @brief Parse a ``continue`` statement.
+   * @return A parsed ``continue`` statement.
+   */
+  ast::StmtNode parse_continue();
+
+  /**
    * @brief Parse a ``return`` statement.
    * @return A parsed ``return`` statement.
    */

@@ -47,6 +47,9 @@ IfStmtNode::IfStmtNode(ExprNode condition, StmtNode then_stmt,
     : condition(std::move(condition)), then_stmt(std::move(then_stmt)),
       else_stmt(std::move(else_stmt)) {}
 
+WhileStmtNode::WhileStmtNode(ExprNode condition, StmtNode body)
+    : condition(std::move(condition)), body(std::move(body)) {}
+
 CompoundStmtNode::CompoundStmtNode(std::vector<StmtNode> stmts)
     : stmts(std::move(stmts)) {}
 

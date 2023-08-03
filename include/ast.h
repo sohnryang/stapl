@@ -412,12 +412,66 @@ struct ReturnStmtNode {
 };
 
 /**
+ * @brief AST node for break statement.
+ */
+struct BreakStmtNode {
+  /**
+   * @brief Move constructor.
+   */
+  BreakStmtNode(BreakStmtNode &&) = default;
+
+  /**
+   * @brief Default constructor.
+   */
+  explicit BreakStmtNode() = default;
+
+  /**
+   * @brief Move assignment operator.
+   */
+  BreakStmtNode &operator=(BreakStmtNode &&) = default;
+
+  /**
+   * @brief Comparision operator overload.
+   * @param rhs ``BreakStmtNode`` on the RHS.
+   * @return Whether the objects referenced by ``this`` and ``rhs`` are equal.
+   */
+  bool operator==(const BreakStmtNode &rhs) const = default;
+};
+
+/**
+ * @brief AST node for continue statement.
+ */
+struct ContinueStmtNode {
+  /**
+   * @brief Move constructor.
+   */
+  ContinueStmtNode(ContinueStmtNode &&) = default;
+
+  /**
+   * @brief Default constructor.
+   */
+  explicit ContinueStmtNode() = default;
+
+  /**
+   * @brief Move assignment operator.
+   */
+  ContinueStmtNode &operator=(ContinueStmtNode &&) = default;
+
+  /**
+   * @brief Comparision operator overload.
+   * @param rhs ``ContinueStmtNode`` on the RHS.
+   * @return Whether the objects referenced by ``this`` and ``rhs`` are equal.
+   */
+  bool operator==(const ContinueStmtNode &rhs) const = default;
+};
+
+/**
  * @brief Variant for statement nodes.
  */
-using StmtNode =
-    std::variant<LetStmtNode, AssignmentStmtNode,
-                 std::unique_ptr<struct IfStmtNode>, ReturnStmtNode,
-                 std::unique_ptr<struct CompoundStmtNode>>;
+using StmtNode = std::variant<
+    LetStmtNode, AssignmentStmtNode, std::unique_ptr<struct IfStmtNode>,
+    std::unique_ptr<struct WhileStmtNode>, BreakStmtNode, ContinueStmtNode,
+    ReturnStmtNode, std::unique_ptr<struct CompoundStmtNode>>;
 
 /**
  * @brief AST node for if statement.
@@ -465,6 +519,46 @@ struct IfStmtNode {
    * @return Whether the objects referenced by ``this`` and ``rhs`` are equal.
    */
   bool operator==(const IfStmtNode &rhs) const = default;
+};
+
+/**
+ * @brief AST node for while statement.
+ */
+struct WhileStmtNode {
+  /**
+   * @brief Condition expression.
+   */
+  ExprNode condition;
+
+  /**
+   * @brief Statement to be executed if the condition is true.
+   */
+  StmtNode body;
+
+  /**
+   * @brief Move constructor.
+   */
+  WhileStmtNode(WhileStmtNode &&) = default;
+
+  /**
+   * @brief Instantiate from condition expression and statement to be executed
+   * if the condition is true.
+   * @param condition Condition expression.
+   * @param body Statement to be executed if the condition is true.
+   */
+  explicit WhileStmtNode(ExprNode condition, StmtNode body);
+
+  /**
+   * @brief Move assignment operator.
+   */
+  WhileStmtNode &operator=(WhileStmtNode &&) = default;
+
+  /**
+   * @brief Comparision operator overload.
+   * @param rhs ``WhileStmtNode`` on the RHS.
+   * @return Whether the objects referenced by ``this`` and ``rhs`` are equal.
+   */
+  bool operator==(const WhileStmtNode &rhs) const = default;
 };
 
 /**

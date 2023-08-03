@@ -110,6 +110,26 @@ public:
   void operator()(std::unique_ptr<ast::IfStmtNode> &node);
 
   /**
+   * @brief Annotate the type of a while statement node.
+   * @param node The node to annotate.
+   */
+  void operator()(std::unique_ptr<ast::WhileStmtNode> &node);
+
+  /**
+   * @brief Annotate the type of a break statement node.
+   * @param node The node to annotate.
+   * @note This function does not check if the break statement is in a loop.
+   */
+  void operator()(ast::BreakStmtNode &node);
+
+  /**
+   * @brief Annotate the type of a continue statement node.
+   * @param node The node to annotate.
+   * @note This function does not check if the continue statement is in a loop.
+   */
+  void operator()(ast::ContinueStmtNode &node);
+
+  /**
    * @brief Annotate the type of a return statement node.
    * @param node The node to annotate.
    */
